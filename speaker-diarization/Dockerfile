@@ -83,14 +83,13 @@ RUN mkdir -p /home/speaker-diarization/ \
     && apt-get update \
     && apt-get install -y python3-pip \
     sox \ 
-    libsndfile1 \
-    apt install git-all -y
+    libsndfile1
     # python3.8-dev 
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Singapore
 
-# run apt install git-all -y
+run apt install git-all -y
 
 WORKDIR /home/speaker-diarization/
 COPY requirements.txt /home/speaker-diarization/requirements.txt
@@ -100,7 +99,7 @@ RUN python3.8 -m pip install --upgrade pip && python3.8 -m pip install -r requir
 #RUN python3.8 -m pip install numpy
 #RUN python3.8 -m pip install pybind11
 #RUN python3.8 -m pip install scipy
-RUN python3.8 -m pip install -r requirements.txt
+# RUN python3.8 -m pip install -r requirements.txt
 # COPY  data/offline_diarization_with_asr.yaml /home/speaker-diarization/data/offline_diarization_with_asr.yaml
 
 # COPY original-vistry-ffmpeg.wav /home/speaker-diarization
