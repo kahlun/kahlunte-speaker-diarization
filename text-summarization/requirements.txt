@@ -1,0 +1,5 @@
+transformers
+jiwer
+torch
+# torchvision
+# torchaudio

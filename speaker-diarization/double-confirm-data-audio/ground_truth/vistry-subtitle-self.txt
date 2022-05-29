@@ -1,0 +1,75 @@
+speaker_​0: hi nagetta​
+speaker_1: yes sir
+speaker_0: all right do you know the mileage on the trip
+speaker_1: i have no idea​
+speaker_0: okay we're just going to throw something in there right now at the service location​
+speaker_1: um, he is at the walmart two thousand and one so first street
+speaker_0: southwest first street​
+speaker_1: no south first street​
+speaker_0: south first street​
+speaker_1: i don't think i've ever been asked if i had the mileage on the truck​
+speaker_0: yeah it's a new system we have is just to verify information​
+speaker_1: um​
+speaker_0: do you have a vin number​
+speaker_1: i do not i have a unit number​
+speaker_0: what's that​
+speaker_1: it is two seven dash seven three two​
+speaker_0: do you have a license plate number
+speaker_1: I do not
+speaker_0: all right do you know is it on a tractor trainer​
+speaker_1: it is on a truck​
+speaker_0: okay do you have the year
+speaker_1: I do not​
+speaker_0: do you know what canada is​
+speaker_1: i know it's a truck​
+speaker_0: okay​
+speaker_1: um i mean our system's way totally different i mean we don't we don't ask all of that stuff unless um i mean actually we don't never ask that stuff there's a license plate and that's like when the tech goes and does his job and he gets a license plate then and then the vin number also​
+speaker_0: for sure the only reason why we do this is because we don't know what kind of truck it is we don't know what it looks like what the color is we don't know anything so to identify the truck 
+speaker_1: So to identify the truck, it is gonna be red white, cause its is a AAA copper do not have AAA copper slapped on the side of it.
+speaker_0: all right do you have a deal and dial number for the company​
+speaker_1: I had the bridgestone account number
+speaker_0: okay um what's the uh what's the the company name that's going to be on the ticket that has the accountant​
+speaker_1: a a a cooper​
+speaker_0: okay let me search that okay at a doth alabama okay all right i'm sorry about all the questions but yeah we just we try to verify as much as we can so i don't go out there and get lost so do you know what position tier it is​
+speaker_1: left front outside
+speaker_0: left for an outside drive​
+speaker_1: okay​
+speaker_0: and um others the size do you know if it's a low pro twenty two and a half​
+speaker_1: two ninety five seventy five twenty R two five​
+speaker_0: okay yeah and is it blown​
+speaker_1: they really didn't specify but i it will need to be replaced so i mean​
+speaker_0: yeah all right so that paying with the loves express account you said a bridgestone account​
+speaker_1: bridgestone bridgestone give you the account number if you like​
+speaker_0: what is that​
+speaker_1: seven seven two zero nine eight​
+speaker_0: seven seven two zero nine eight
+speaker_1: yes sir
+speaker_0: that 's really good that you gave me that because that is a bunch of them
+speaker_1: a there's a lot
+speaker_0: all right and um i guess we will get a loyalty card from the driver. what is his name?
+speaker_1: his name is if ... i got on the right screen his name is joseph lambert
+speaker_0: can i get phone number for him? 
+speaker_1: 405-862-6764
+speaker_0: and do you know what specific tie you are wanting to take out there ?
+speaker_1: they are. their first choices are 268, their second is an R284.Their third is a R213 and thier 4th is R123 and they're all 14 plus
+speaker_0: alright
+speaker_1: And yes, I know the R123 is a trailer tire, but that is one of their preferences.
+speaker_0: OK what they all. 
+speaker_1: What they'll do is they'll put it on and then they'll get back to the yard and they'll take it off and put one of their tires on it for sure. 
+speaker_0: So I might need those numbers, but one more time. Do you have authorization name or a number?
+speaker_1: Uh, yeah. His name is Brett. His his phone number is 334
+speaker_0: No, no, I'll theorization number
+speaker_1: What's that mean? 
+speaker_0: I would said number that gives. It's like a like a reference number. So if we call back to get a PO or different number that represents the service,
+speaker_1: OK, we call it a reference number or work order number. So an authorization number kind of through me through a loop. Alright, it's 517432.
+speaker_0: OK. And the name?
+speaker_1: Ohh. What do you mean?
+speaker_0: Name the person who authorized this service
+speaker_1: Southern Tire Mart.
+speaker_0: It yeah. Just need a like a person's name. 
+speaker_1: So Heather, 
+spekaer_0: OK.
+speaker_0: Alrighty, so now you those numbers one more time you said are 268, yeah, R268R284. Or 213 and R123.
+speaker_0: Alrighty, I will attempt to get these tires. I'm not sure I'd have to go out there and verify. Can I get you on a brief hold just to verify that we have these stars? Awesome. Thank you.
+speaker_0: Alrighty, maybe there I am. Alrighty. So we actually don't have any of these tires and stock right now. So reference I could probably give you is to give. The Truck truck care over on 59th street I think it's 89th street in Oklahoma City, my store 211. OK. And they could possibly help you out, see if they have these tires installed. I just hate to charge you to go all the way over there and then out to Chickasha and who am I speaking with? This is Eric from store 941. Sweet.
+speaker_1: All right. Let's thank you, Sir, for going and checking. No problem, ma'am. Thank you. Have a good day. You too. Bye.

@@ -1,0 +1,17 @@
+# Copyright (C) 2021 Intel Corporation
+# SPDX-License-Identifier: BSD-3-Clause
+version: "3"
+services:
+  server_text_summarization:
+    build: .
+    environment:
+      # for server-service-speaker_diarization
+      - PYTHONUNBUFFERED= 1
+      - ZMQ_TOPIC_TS=text_summarization
+      - ZMQ_TYPE_TS=zmq_tcp
+      - ZMQ_HOST_IP_TS=127.0.0.1
+      - ZMQ_HOST_PORT_TS=3001
+    network_mode: "host"
+    # user: 1000:1000
+    volumes:
+      - /run/user/1000/pulse/native:/run/user/1000/pulse/native

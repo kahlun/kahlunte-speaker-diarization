@@ -1,0 +1,20 @@
+# Copyright (C) 2021 Intel Corporation
+# SPDX-License-Identifier: BSD-3-Clause
+version: "3"
+services:
+  audio-ingestion:
+    build: .
+    network_mode: "host"
+    environment:
+      # ZMQ-related configurations
+      - ZMQ_TOPIC=audio_for_speaker_diarization
+      - ZMQ_TYPE=zmq_tcp
+      - ZMQ_HOST_IP=127.0.0.1
+      - ZMQ_HOST_PORT=3000
+      # Seconds for each publish of text
+      - PUBLISH_INTERVAL=10
+      # - AUDIO_FILE_PATH=original-vistry-ffmpeg-1-minute.wav
+      - AUDIO_FILE_PATH=youtube-full-ffmpeg-start_from_1_minute-duration-1-minute.wav
+      # - AUDIO_FILE_PATH=original-vistry-ffmpeg.wav
+      - PYTHONUNBUFFERED= 1
+    privileged: true
