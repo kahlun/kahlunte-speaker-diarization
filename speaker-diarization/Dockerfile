@@ -11,15 +11,15 @@ RUN apt update && apt install -y \
     python3-pip \
     wget \
     && rm -rf /var/lib/apt/lists/* \
-    python3.8-dev \
-    apt install software-properties-common -y \
-    add-apt-repository ppa:deadsnakes/ppa -y \
-    apt install python3.8 -y
+    python3.8-dev
+    # apt install software-properties-common -y \
+    # add-apt-repository ppa:deadsnakes/ppa \
+    # apt install python3.8 -y
     
 #install python 3.8
-# RUN apt update && apt install software-properties-common -y
-# RUN add-apt-repository ppa:deadsnakes/ppa -y
-# RUN apt install python3.8 -y
+RUN apt update && apt install software-properties-common -y
+RUN add-apt-repository ppa:deadsnakes/ppa -y
+RUN apt install python3.8 -y
 
 RUN wget https://cmake.org/files/v3.15/cmake-3.15.0-Linux-x86_64.sh \
     && mkdir /opt/cmake \
