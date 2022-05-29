@@ -100,7 +100,7 @@ RUN python3.8 -m pip install -r requirements.txt
 # COPY  data/offline_diarization_with_asr.yaml /home/speaker-diarization/data/offline_diarization_with_asr.yaml
 
 COPY double-confirm-data-audio/ground_truth /home/speaker-diarization/double-confirm-data-audio/ground_truth
-COPY original-vistry-ffmpeg.wav /home/speaker-diarization
+# COPY original-vistry-ffmpeg.wav /home/speaker-diarization
 
 HEALTHCHECK NONE
 
