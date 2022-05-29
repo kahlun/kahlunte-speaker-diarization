@@ -89,14 +89,13 @@ run apt install git-all -y
 
 WORKDIR /home/speaker-diarization/
 COPY requirements.txt /home/speaker-diarization/requirements.txt
-RUN python3.8 -m pip install --upgrade pip
-RUN python3.8 -m pip install -r requirements.txt
+RUN python3.8 -m pip install --upgrade pip && python3.8 -m pip install -r requirements.txt
 
 COPY double-confirm-data-audio/ground_truth /home/speaker-diarization/double-confirm-data-audio/ground_truth
 
-RUN mkdir -p model/philschmid/
-WORKDIR /home/speaker-diarization/model/philschmid
-RUN git clone https://huggingface.co/philschmid/bart-large-cnn-samsum
+RUN mkdir -p model/summarization/philschmid/
+WORKDIR /home/speaker-diarization/model/summarization/philschmid
+RUN git lfs install && git clone https://huggingface.co/philschmid/bart-large-cnn-samsum
 
 WORKDIR /home/speaker-diarization/
 
