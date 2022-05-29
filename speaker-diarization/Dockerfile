@@ -113,6 +113,7 @@ ENV MPLCONFIGDIR=/tmp/MPLCONFIGDIR/
 RUN chmod 777 /home/speaker-diarization/data/
 
 RUN wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/titanet_large/versions/v0/zip -O titanet_large_v0.zip
+RUN apt install zip -y
 RUN unzip titanet_large_v0.zip -d NeMo_1.9.0rc0/titanet-l/492c0ab8416139171dc18c21879a9e45
 
 RUN wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/stt_en_conformer_ctc_large/versions/1.6.0/zip -O stt_en_conformer_ctc_large_1.6.0.zip
