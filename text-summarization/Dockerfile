@@ -95,7 +95,8 @@ COPY double-confirm-data-audio/ground_truth /home/speaker-diarization/double-con
 
 RUN mkdir -p model/summarization/philschmid/
 WORKDIR /home/speaker-diarization/model/summarization/philschmid
-RUN git lfs install && git clone https://huggingface.co/philschmid/bart-large-cnn-samsum
+
+RUN apt install git-lfs && git lfs install && git clone https://huggingface.co/philschmid/bart-large-cnn-samsum
 
 WORKDIR /home/speaker-diarization/
 

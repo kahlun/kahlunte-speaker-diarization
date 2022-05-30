@@ -113,19 +113,19 @@ ENV NUMBA_CACHE_DIR=/tmp/NUMBA_CACHE_DIR/
 ENV MPLCONFIGDIR=/tmp/MPLCONFIGDIR/
 RUN mkdir -m 777 /tmp/NUMBA_CACHE_DIR /tmp/MPLCONFIGDIR && chmod 777 /home/speaker-diarization/data/ \
     && wget --content-disposition https://raw.githubusercontent.com/NVIDIA/NeMo/main/examples/speaker_tasks/diarization/conf/offline_diarization_with_asr.yaml -O offline_diarization_with_asr.yml \
-    && mv offline_diarization_with_asr.yml /home/speaker-diarization/data/offline_diarization_with_asr.yaml
-    # && wget --content-disposition https://kaldi-asr.org/models/5/4gram_big.arpa.gz \
-    # && gzip -d 4gram_big.arpa.gz \
-    # && mv 4gram_big.arpa /home/speaker-diarization/data \
-    # && wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/titanet_large/versions/v0/zip -O titanet_large_v0.zip \
-    # && apt install zip -y \
-    # && mkdir -p NeMo_1.9.0rc0/titanet-l/492c0ab8416139171dc18c21879a9e45 && mkdir -p NeMo_1.9.0rc0/stt_en_conformer_ctc_large/010120d9959425c7862c9843960b3235 \
-    # && unzip titanet_large_v0.zip -d NeMo_1.9.0rc0/titanet-l/492c0ab8416139171dc18c21879a9e45 \
-    # && wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/stt_en_conformer_ctc_large/versions/1.6.0/zip -O stt_en_conformer_ctc_large_1.6.0.zip \
-    # && unzip stt_en_conformer_ctc_large_1.6.0.zip -d NeMo_1.9.0rc0/stt_en_conformer_ctc_large/010120d9959425c7862c9843960b3235 \
-    # && apt-get install -y ffmpeg \ 
-    # && git clone https://github.com/NVIDIA/apex \
-    # && rm titanet_large_v0.zip stt_en_conformer_ctc_large_1.6.0.zip
+    && mv offline_diarization_with_asr.yml /home/speaker-diarization/data/offline_diarization_with_asr.yaml \
+    && wget --content-disposition https://kaldi-asr.org/models/5/4gram_big.arpa.gz \
+    && gzip -d 4gram_big.arpa.gz \
+    && mv 4gram_big.arpa /home/speaker-diarization/data \
+    && wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/titanet_large/versions/v0/zip -O titanet_large_v0.zip \
+    && apt install zip -y \
+    && mkdir -p NeMo_1.9.0rc0/titanet-l/492c0ab8416139171dc18c21879a9e45 && mkdir -p NeMo_1.9.0rc0/stt_en_conformer_ctc_large/010120d9959425c7862c9843960b3235 \
+    && unzip titanet_large_v0.zip -d NeMo_1.9.0rc0/titanet-l/492c0ab8416139171dc18c21879a9e45 \
+    && wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/stt_en_conformer_ctc_large/versions/1.6.0/zip -O stt_en_conformer_ctc_large_1.6.0.zip \
+    && unzip stt_en_conformer_ctc_large_1.6.0.zip -d NeMo_1.9.0rc0/stt_en_conformer_ctc_large/010120d9959425c7862c9843960b3235 \
+    && apt-get install -y ffmpeg \ 
+    && git clone https://github.com/NVIDIA/apex \
+    && rm titanet_large_v0.zip stt_en_conformer_ctc_large_1.6.0.zip
 
 # RUN wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/titanet_large/versions/v0/zip -O titanet_large_v0.zip
 # RUN apt install zip -y
