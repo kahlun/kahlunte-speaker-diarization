@@ -19,7 +19,7 @@ This is a module of audio summarization. It use the EII message bus as transfer 
 
 ## Architecture Design:
 
-<img src="images-readme/architecture-design-audio-summarization.PNG">
+<img src="images-readme/architecture-design-audio-summarization.png">
 
 ## Message Bus
 Message bus used is [EII message bus](https://github.com/open-edge-insights/).
