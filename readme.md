@@ -49,7 +49,7 @@ Configuration to change file name refer [here](#configuration-audio-ingestion)
 
 Process: 
 send one audio file to the message bus as publisher.
-<img src="images-readme/audio-ingestion-console-output.PNG">
+<img src="images-readme/audio-ingestion-console-output.png">
 
 ### Speaker Diarization
 
@@ -64,7 +64,7 @@ Model Information:
 
 Constraint: Now only support 2 speakers. 
 
-<img src="images-readme/speaker-diarization-terminal.PNG">
+<img src="images-readme/speaker-diarization-terminal.png">
 
 ### Text Summarization
 
@@ -87,7 +87,7 @@ Abstractive Summarization model
 
 Constraint: Now only support text ~< 3000 chacracters or 1024(-2) subwords.
 
-<img src="images-readme/speaker-diarization-terminal.PNG">
+<img src="images-readme/speaker-diarization-terminal.png">
 
 ## Run Demo
 
