@@ -15,7 +15,7 @@
 - [Performance / Benchmark support by using own data](#benchmark)
 
 ## Overview
-This is a module of audio summarization. It use the EII message bus as transfer protocol to connect its individual components(audio ingestion, speaker diarization and text summarization).
+This is a module of audio summarization. It use the EII message bus as transfer protocol to connect its individual components(audio ingestion, speaker diarization and text summarization). 
 
 ## Architecture Design:
 
@@ -45,10 +45,12 @@ If you have new audio file,
 
 Constraint : Currently if audio file > 255 MB, might broke because not covered.
 
-Configuration to change file name refer [here](#configuration-audio-ingestion)
+Configuration to change audo file name refer [here](#configuration-audio-ingestion)
 
 Process: 
 send one audio file to the message bus as publisher.
+
+expected output from container text ingestion
 <img src="images-readme/audio-ingestion-console-output.png">
 
 ### Speaker Diarization
@@ -64,6 +66,7 @@ Model Information:
 
 Constraint: Now only support 2 speakers. 
 
+expected output from container speaker diarization
 <img src="images-readme/speaker-diarization-terminal.png">
 
 ### Text Summarization
@@ -87,17 +90,20 @@ Abstractive Summarization model
 
 Constraint: Now only support text ~< 3000 chacracters or 1024(-2) subwords.
 
-<img src="images-readme/speaker-diarization-terminal.png">
+expected output from container text summarization
+<img src="images-readme/text-summarization-terminal">
 
 ## Run Demo
 
-start the docker container from reverse way
+Start the docker container in reverse way. 
+
+Text Summarization -> Speaker Diarization -> Audio Ingestion.
 
 Notes: if plan to modify the dockerfile or source code. please <i>docker-compose build && docker-compose up</i>. Configuration do not need to rebuild the image (<i>docker-compose build</i>)
 
 ### start text summarization
 
-run from current directory instead of change to audio-ingestion folder.
+Run from current directory instead of change to audio-ingestion folder.
 
 ```
 docker-compose -f ./text-summarization/docker-compose.yml up
@@ -105,7 +111,7 @@ docker-compose -f ./text-summarization/docker-compose.yml up
 
 ### start speaker diarization
 
-run from current directory instead of change to audio-ingestion folder.
+Run from current directory instead of change to audio-ingestion folder.
 
 ```
 docker-compose -f ./speaker-diarization/docker-compose.yml up
@@ -113,7 +119,7 @@ docker-compose -f ./speaker-diarization/docker-compose.yml up
 
 ### start audio ingestion
 
-run from current directory instead of change to audio-ingestion folder.
+Run from current directory instead of change to audio-ingestion folder.
 
 ```
 docker-compose -f ./audio-ingestion/docker-compose.yml up
@@ -122,7 +128,7 @@ docker-compose -f ./audio-ingestion/docker-compose.yml up
 ## Configuration
 This section will show the 3 [module](#module) docker-compose.yml. 
 A file use as environment value for the container.
-### Audio Ingestion
+### Configuration Audio Ingestion
 
 <br></br>
 
@@ -136,7 +142,7 @@ AUDIO_FILE_PATH      | File Path of audio file                                  
 PYTHONUNBUFFERED     | enable python print log                                                                       | 1  
 <br></br>
 
-### Speaker Diarization
+### Configuration Speaker Diarization
 SD -> [Speaker Diarization](#speaker-diarization)
 
 TS -> [Text Summarization](#text-summarization)
@@ -156,7 +162,7 @@ PYTHONUNBUFFERED     | enable python print log                                  
 
 <br></br>
 
-### Text Summarization
+### Configuration Text Summarization
 
 <br></br>
 
@@ -166,7 +172,6 @@ PYTHONUNBUFFERED     | enable python print log                                  
  ZMQ_HOST_IP         | Address/IP of the ZMQ server for the client to establish communication                        | `127.0.0.1`       
  ZMQ_HOST_PORT       | Port of the ZMQ server to which the client will connect/bind                                  | `3001`            
  ZMQ_TOPIC           | ZMQ Topic to enable pub/sub communication between clients                                     | `text-summarization`   
-AUDIO_FILE_PATH      | File Path of audio 
 PYTHONUNBUFFERED     | enable python print log                                                                       | 1  
 <br></br>
 
