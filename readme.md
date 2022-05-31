@@ -91,7 +91,7 @@ Abstractive Summarization model
 Constraint: Now only support text ~< 3000 chacracters or 1024(-2) subwords.
 
 expected output from container text summarization
-<img src="images-readme/text-summarization-terminal">
+<img src="images-readme/text-summarization-terminal.png">
 
 ## Run Demo
 
