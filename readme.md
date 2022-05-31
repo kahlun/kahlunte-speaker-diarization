@@ -37,7 +37,7 @@ Here, we only use the TCP [ZeroMq](https://github.com/open-edge-insights/eii-mes
 
 ### Audio Ingestion
 Expectation: [filename].wav file exist.
-filename can refer to [here](audio-ingestion/original-vistry-ffmpeg-1-minute.wav.
+filename can refer to [here](audio-ingestion/original-vistry-ffmpeg-1-minute.wav).
 
 If you have new audio file, 
 - Add it here and modify dockerfile.
