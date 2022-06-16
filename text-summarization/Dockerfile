@@ -96,7 +96,9 @@ COPY double-confirm-data-audio/ground_truth /home/speaker-diarization/double-con
 RUN mkdir -p model/summarization/philschmid/
 WORKDIR /home/speaker-diarization/model/summarization/philschmid
 
-RUN apt install git-lfs && git lfs install && git clone https://huggingface.co/philschmid/bart-large-cnn-samsum
+RUN apt install git-lfs && git lfs install
+RUN git clone https://huggingface.co/philschmid/bart-large-cnn-samsum
+RUN pwd
 
 WORKDIR /home/speaker-diarization/
 
@@ -104,5 +106,5 @@ WORKDIR /home/speaker-diarization/
 COPY text-summarization.py /home/speaker-diarization/
 
 HEALTHCHECK NONE
-
+#CMD ["python3.8", "-c", "import os;print(os.getcwd());import time;time.sleep(1000000);"]
 CMD python3.8 text-summarization.py a

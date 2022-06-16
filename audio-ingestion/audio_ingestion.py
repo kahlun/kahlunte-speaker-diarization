@@ -22,9 +22,13 @@
 
 import logging
 import os
+
 import eii.msgbus as mb
 import base64
 from scipy.io import wavfile 
+import time
+
+import hashlib
 
 level = logging.DEBUG
 logging.basicConfig(
@@ -72,18 +76,54 @@ publisher = msgbus.new_publisher(topic)
 log.info("Running...")
 try:
 
-    # while True:
-    sampling_rate, data = wavfile.read(audio_file_path)
-    blob_one =  base64.b64encode(data)
+        # while True:
+    sampling_rate, data = wavfile.read('audio_files/' + audio_file_path)
+    # sampling_rate, data = wavfile.read(audio_file_path)
+    to_send_base64 =  base64.b64encode(data)
+    
+    hash = hashlib.sha1()
+    hash.update(str(time.time()).encode('utf-8'))
+    unique_key = hash.hexdigest()
+    
     meta = {
         'sampling_rate' : 16000,
+        'last' : False,
+        'id' : unique_key,
     }
+    total = 0
     log.info("Publishing...")
-    publisher.publish((meta, blob_one))
-    log.info("Published...")
+    MAX_MB = 1024 * 1024 * 61
+    # MAX_MB = 66961920 #tested largest file after convert base64
+    chunks_length = int(len(to_send_base64) / MAX_MB)
+    
+    # though size limit issue, because 50mb, 50,221,542 bytes file fail, but < 5mb file pass without sleep.
+    # this is the solution with chunk size + sleep, if send multiple chunk without sleep will fail too.
+    def send_with_chunks(to_send_base64, meta):
+        if(chunks_length is not 0): #no need chunk
 
-    # log.debug(f"Published. Waiting for {interval}s for next publish...")
-        # time.sleep(interval)
+            chunks, chunk_size = len(to_send_base64), int(len(to_send_base64)/chunks_length)
+            to_send_list = [to_send_base64[i:i+chunk_size] for i in range (0, chunks, chunk_size)]
+
+            for x in to_send_list:
+                print('pushed')
+                total+= len(x)
+                if(x != to_send_list[-1]):
+                    print('one chunk')
+                    publisher.publish((meta, x))
+                else:
+                    print('last piece')
+                    meta['last'] = True
+                    publisher.publish((meta, x))
+                time.sleep(0.1) # very important to sleep after assume it is published.
+        else:
+            publisher.publish((meta, to_send_base64))
+            time.sleep(0.1) # very important to sleep after assume it is published.
+
+    meta['last'] = True
+    publisher.publish((meta, to_send_base64))
+    time.sleep(0.1) # very important to sleep after assume it is published.
+
+    log.info("Published...")
 
 except KeyboardInterrupt:
     log.debug("Quitting...")

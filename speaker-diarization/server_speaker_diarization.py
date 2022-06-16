@@ -19,9 +19,10 @@
 # SOFTWARE.
 """EII Message Bus echo service Python example.
 """
-
+profile = lambda f: f
 import json
 import argparse
+
 import eii.msgbus as mb
 import time
 import glob
@@ -79,22 +80,10 @@ log.setLevel(level)
 
 # logging.disable(logging.CRITICAL)
 
-# Argument parsing
-# ap = argparse.ArgumentParser()
-# ap.add_argument('-s', '--service-name', dest='service_name',
-#                 default='speaker_diarization', help='Service name')
-# args = ap.parse_args()
 
 msgbus = None
 service = None
 
-# mb_config = {
-#     "type": "zmq_tcp",
-#     "speaker_diarization": {
-#         "host": "127.0.0.1",
-#         "port": 8675
-#     }
-# }
 
 server_service_name = (
     os.environ.get("ZMQ_TOPIC_SD")
@@ -119,14 +108,18 @@ mb_config = {
 }
 # source code of speaker_diarization
 
-
+model_path = 'model/Nemo/NeMo_1.9.0rc0'
 
 overwrite_speaker_diarization = True # if output -> model -> wav already exist continue overwrite_speaker_diarization
 overwrite_summarization = True # if output -> model -> wav already exist continue summarization
 
 # asr_model_name_list = ['QuartzNet15x5Base-En', 'stt_en_conformer_ctc_large'] # change index to pick model
-asr_model_name_list = ['stt_en_conformer_ctc_large'] # change index to pick model
-speaker_embedding_feature_model_name_list = ['titanet_large']
+model_variant = 'stt_en_conformer_ctc_xlarge'
+# model_variant = 'stt_en_conformer_ctc_large'
+asr_model_name_list = [model_path + '/'+model_variant+'/010120d9959425c7862c9843960b3235/'+model_variant+'.nemo'] # change index to pick model
+# speaker_embedding_feature_model_name_list = [model_path + '/titanet_large']
+speaker_embedding_feature_model_name_list = [model_path + '/titanet-l/492c0ab8416139171dc18c21879a9e45/titanet-l.nemo']
+
 defined_model_asr_feature = None # ['stt_en_conformer_ctc_large', 'titanet_large'] for single speaker diarization
 ROOT = os.getcwd()
 shared_files_dir = os.path.join(ROOT,'data')
@@ -138,9 +131,10 @@ ARPA_URL = 'https://kaldi-asr.org/models/5/4gram_big.arpa.gz'
 
 text_ref_youtube = open('double-confirm-data-audio/ground_truth' + '/youtube-subtitle-author' +'.txt', 'r').read() #ground truth youtube
 text_ref_vistry = open('double-confirm-data-audio/ground_truth' + '/vistry-subtitle-self' +'.txt', 'r').read() #ground truth vistry
-
-def main():
-    audio_file_list = glob.glob(f"{audio_file_path}/*.wav")
+@profile
+def main(file_name):
+    # audio_file_list = glob.glob(f"{audio_file_path}/*.wav")
+    audio_file_list = glob.glob(f"{audio_file_path}/*.wav") # remove support for multiple wav file
     text_lm_list = []
     response = {
         'dialogues' : [],
@@ -167,14 +161,26 @@ def main():
         for feature_model_name in speaker_embedding_feature_model_name_list:
             data_dir = os.path.join(ROOT,'data/output/'+ asr_model_name + '-' + feature_model_name)
             os.makedirs(data_dir, exist_ok=True)
-            for audio_file_absolute_path in audio_file_list: # layer for all .wav files
-                file_name = audio_file_absolute_path
-                audio_file_absolute_path = file_name
-                audio_file_name_no_extension = os.path.splitext(os.path.basename(audio_file_absolute_path))[0] #variable, new folder name
-                file_dir = data_dir + "/" + audio_file_name_no_extension
-                speaker_diarization(file_name, data_dir, asr_model_name, feature_model_name)
-                text_lm_list.append(summarization_and_benchmark())
-                logging.info('output : ')
+            # for audio_file_absolute_path in audio_file_list: # layer for all .wav files
+            #     file_name = audio_file_absolute_path
+            #     audio_file_absolute_path = file_name
+            #     audio_file_name_no_extension = os.path.splitext(os.path.basename(audio_file_absolute_path))[0] #variable, new folder name
+            #     file_dir = data_dir + "/" + audio_file_name_no_extension
+            #     speaker_diarization(file_name, data_dir, asr_model_name, feature_model_name)
+            #     text_lm_list.append(summarization_and_benchmark())
+            #     logging.info('output : ')
+            
+            # remove support for list of wav files.
+            
+            audio_file_absolute_path = file_name
+            audio_file_name_no_extension = os.path.splitext(os.path.basename(audio_file_absolute_path))[0] #variable, new folder name
+            file_dir = data_dir + "/" + audio_file_name_no_extension
+            speaker_diarization(file_name, data_dir, asr_model_name, feature_model_name)
+            text_lm_list.append(summarization_and_benchmark())
+            logging.info('output : ')
+                
+                
+                
     t_end = time.perf_counter()
     response['execution_time'] = t_end
     logging.info("Speaker diarization Done. ")
@@ -191,7 +197,7 @@ def main():
         response['dialogues'].append(single_dialogue)
     
     return response
-    
+@profile
 def speaker_diarization(file_name, data_dir, asr_model_name, feature_model_name):
     
     def get_config():
@@ -249,64 +255,27 @@ def speaker_diarization(file_name, data_dir, asr_model_name, feature_model_name)
     create_input_manifest()    
     cfg = get_config()
     cfg.diarizer.manifest_filepath = os.path.join(shared_files_dir,'input_manifest.json')
-    cfg.diarizer.asr.model_path = 'stt_en_conformer_ctc_large'
+    # cfg.diarizer.asr.model_path = 'stt_en_conformer_ctc_large'
+    cfg.diarizer.asr.model_path = asr_model_name
+    # asr_model_name
     cfg.diarizer.speaker_embeddings.model_path = feature_model_name
     cfg.diarizer.out_dir = file_dir #Directory to store intermediate files and prediction outputs
-    
-    asr_ts_decoder = ASR_TIMESTAMPS(**cfg.diarizer)
-    asr_model = asr_ts_decoder.set_asr_model()
-    word_hyp, word_ts_hyp = asr_ts_decoder.run_ASR(asr_model)
-
-    # print("Decoded word output dictionary: \n", word_hyp[audio_file_name_no_extension])
-    # print("Word-level timestamps dictionary: \n", word_ts_hyp[audio_file_name_no_extension])
-
-    asr_diar_offline = ASR_DIAR_OFFLINE(**cfg.diarizer)
-    asr_diar_offline.word_ts_anchor_offset = asr_ts_decoder.word_ts_anchor_offset
-
-    diar_hyp, diar_score = asr_diar_offline.run_diarization(cfg, word_ts_hyp)
-    # print("Diarization hypothesis output: \n", diar_hyp[audio_file_name_no_extension])
-
-    predicted_speaker_label_rttm_path = f"{path_pred_rttms}/"+audio_file_name_no_extension+".rttm"
-    shutil.copy(predicted_speaker_label_rttm_path, f"{path_pred_rttms}/-no-language-model"+audio_file_name_no_extension+".rttm")
-    pred_rttm = read_file(predicted_speaker_label_rttm_path)
-
-    # pp.pprint(pred_rttm)
-
-    pred_labels = rttm_to_labels(predicted_speaker_label_rttm_path)
-
-    asr_diar_offline.get_transcript_with_speaker_labels(diar_hyp, word_hyp, word_ts_hyp)
-
-    transcription_path_to_file = f"{path_pred_rttms}/"+audio_file_name_no_extension+".txt"
-    shutil.copy(transcription_path_to_file, f"{path_pred_rttms}/-no-language-model"+audio_file_name_no_extension+".txt")
-    transcript = read_file(transcription_path_to_file)
-    # pp.pprint(transcript)
-
-    transcription_path_to_file = f"{path_pred_rttms}/"+audio_file_name_no_extension+".json"
-    shutil.copy(transcription_path_to_file, f"{path_pred_rttms}/-no-language-model"+audio_file_name_no_extension+".json")
-    json_contents = read_file(transcription_path_to_file)
-    # pp.pprint(json_contents)
-
-    logging.info('completed speaker diarization without language model')
-
-    def gunzip(file_path,output_path):
-        with gzip.open(file_path,"rb") as f_in, open(output_path,"wb") as f_out:
-            shutil.copyfileobj(f_in, f_out)
-            f_in.close()
-            f_out.close()
-            
     arpa_model_path = os.path.join(shared_files_dir, '4gram_big.arpa')
-    # if not os.path.exists(arpa_model_path):
-    #     global ARPA_URL
-    #     f = wget.download(ARPA_URL, shared_files_dir)
-    #     gunzip(f,f.replace(".gz",""))
-
+    
     cfg.diarizer.asr.ctc_decoder_parameters.pretrained_language_model = arpa_model_path
-
+                                         
     importlib.reload(decoder_timestamps_utils) # This module should be reloaded after you install pyctcdecode.
 
     asr_ts_decoder = ASR_TIMESTAMPS(**cfg.diarizer)
+    logging.info('loaded ASR timestamp configuration')
+    
+    logging.info('setting up ASR time stamp model')
     asr_model = asr_ts_decoder.set_asr_model()
+    logging.info('loaded ASR time stamp model')
+    
+    logging.info('running ASR time stamp model')
     word_hyp, word_ts_hyp = asr_ts_decoder.run_ASR(asr_model)
+    logging.info('prepared hypothesis of word and its timestamp')
 
     # print("Decoded word output dictionary: \n", word_hyp[audio_file_name_no_extension])
     # print("Word-level timestamps dictionary: \n", word_ts_hyp[audio_file_name_no_extension])
@@ -315,20 +284,33 @@ def speaker_diarization(file_name, data_dir, asr_model_name, feature_model_name)
     cfg.diarizer.asr.realigning_lm_parameters.logprob_diff_threshold = 1.2
 
     importlib.reload(diarization_utils) # This module should be reloaded after you install arpa.
-
+    
+    logging.info('loading speaker diarization & ASR configuration')
     asr_diar_offline = ASR_DIAR_OFFLINE(**cfg.diarizer)
+    logging.info('loaded speaker diarization & ASR configuration')
+    
     asr_diar_offline.word_ts_anchor_offset = asr_ts_decoder.word_ts_anchor_offset
-
+    
+    logging.info('running speaker diarization with word timestamp hypothesis')
+    diar_hyp, diar_score = asr_diar_offline.run_diarization(cfg, word_ts_hyp) 
+    logging.info('completed speaker diarization')
+    
+    logging.info('running aligning speaker diarization, word hypothesis, word time stamp hypothesis')
     asr_diar_offline.get_transcript_with_speaker_labels(diar_hyp, word_hyp, word_ts_hyp)
+    logging.info('finish aligning speaker diarization, word hypothesis, word time stamp hypothesis')
 
-    transcription_path_to_file = f"{path_pred_rttms}/"+audio_file_name_no_extension+".txt" # remember delete
+    logging.info('recording the result (dialogue) to file')
+    transcription_path_to_file = f"{path_pred_rttms}/"+audio_file_name_no_extension+".txt" 
+    logging.info('recorded result')
+    
     transcript = read_file(transcription_path_to_file)
     # pp.pprint(transcript)
 
     t_end = time.perf_counter()
     logging.info('completed speaker diarization with language model')
     # print("time consumed", t_end - t_start)
-
+    
+@profile
 def create_diaogue_without_timestamp(file_path, text, file_name):
     print('write dialogue no time stamp', file_name )
     text = re.sub(r'[[0-2][0-9]:[0-9][0-9].[0-9][0-9] - [0-2][0-9]:[0-9][0-9].[0-9][0-9]]', '', text)
@@ -336,7 +318,7 @@ def create_diaogue_without_timestamp(file_path, text, file_name):
     with open(file_path,'w') as fp:
         fp.write(text + file_name)
 
-
+@profile
 # EII publisher to Text summarization
 def publish_to_text_summarization(text):
     
@@ -404,6 +386,7 @@ try:
                 else 3000
             ),
         },
+        'ZMQ_MAXMSGSIZE' : -1,
     }
     
     log.info("Collector Thread")
@@ -412,37 +395,56 @@ try:
 
     log.info(f"Initializing subscriber for topic '{zmq_topic}'")
     subscriber = msgbus.new_subscriber(zmq_topic)
+    a = 0
+    
+    dict_file_chunked = {}
+    id = None
     while True:
-        
+    # while (a<1):
         # while True:
         log.info(f"subscribing for topic '{zmq_topic}'")
+        log.info(f"subscribing for topic hello, modified'")
         msg = subscriber.recv()
+        log.info("received")
+        
         response_blob = msg.get_blob()
         received_meta_data = msg.get_meta_data()
         
-        r = base64.decodebytes(response_blob)
-        response_as_np_array = np.frombuffer(r, dtype=np.int32)
-        if 'sampling_rate' in received_meta_data:
-            sampling_rate = received_meta_data['sampling_rate']
-        else: 
-            sampling_rate = received_meta_data
+        # rmb settle id1 with meta_data
+        if(received_meta_data['id'] in dict_file_chunked):
+            continue
+        elif('id' in received_meta_data):
+            dict_file_chunked[received_meta_data['id']] = {
+                'data' : b'',
+                'last': False,
+            }
+        id = received_meta_data['id']
+        dict_file_chunked[id]['data'] += response_blob
         
-        temp_wav_file = 'data/audio_files/server-wav-scipy.wav'
-        wavfile.write(temp_wav_file, received_meta_data['sampling_rate'], response_as_np_array)
-        response = main()
-
-        # should be no need remove, because now the file is not unique.
-
-        # try:
-        #     os.remove(temp_wav_file)
-        # except Exception as e:
-        #     print(e)
-        #     pass
+        if(received_meta_data['last']):
+            log.info('detected final pieces, combining')
+            response_blob = dict_file_chunked[id]['data']
+            r = base64.decodebytes(response_blob)
+            dict_file_chunked.pop(id, None)
+            response_as_np_array = np.frombuffer(r, dtype=np.int32)
+            if 'sampling_rate' in received_meta_data:
+                sampling_rate = received_meta_data['sampling_rate']
+            else: 
+                sampling_rate = 16000
+            
+            temp_wav_file = 'data/audio_files/' + id + '-server-wav-scipy.wav'
+            wavfile.write(temp_wav_file, received_meta_data['sampling_rate'], response_as_np_array)
+            response = main(temp_wav_file)
+            publish_to_text_summarization(response['dialogues'])
+            try:
+                os.remove(temp_wav_file)
+            except OSError:
+                pass
+            log.info("done one speaker diarization")
+        else:
+            log.info('this round no complete file, not doing speaker diarizarion')
         
-        # publish dialogue for text summarization
-        publish_to_text_summarization(response['dialogues'])
-        
-        log.info("done one speaker diarization")
+        a+=1
         
 except KeyboardInterrupt:
     print('[INFO] Quitting...')

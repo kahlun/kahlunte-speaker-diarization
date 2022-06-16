@@ -51,7 +51,21 @@ data_dir = os.path.join(ROOT,'data/output')
 text_ref_youtube = open('double-confirm-data-audio/ground_truth' + '/youtube-subtitle-author' +'.txt', 'r').read() #ground truth youtube
 text_ref_vistry = open('double-confirm-data-audio/ground_truth' + '/vistry-subtitle-self' +'.txt', 'r').read() #ground truth vistry
 file_dir = 'data'
+model_name = 'philschmid/bart-large-cnn-samsum' ## to be retrieve from os.environment
 
+global model
+global tokenizer
+def store_model_and_tokenizer(model_name):
+    path_model_summarization = 'model/summarization'
+    os.makedirs(path_model_summarization, exist_ok=True)
+    path_model_summarization += '/' + str(model_name)
+    print(path_model_summarization)
+    log.info(path_model_summarization)
+    global model
+    global tokenizer
+    model = AutoModelForSeq2SeqLM.from_pretrained(path_model_summarization)
+    tokenizer = AutoTokenizer.from_pretrained(path_model_summarization)
+store_model_and_tokenizer(model_name) 
 def main(text_lm):
     
     #change None to list to only do 1 time speaker diarization
@@ -64,7 +78,7 @@ def main(text_lm):
         if(os.path.exists(file_dir+'/dialogue.txt')):
             # text_lm = open('dialogue.txt', 'r').read()
             # summarize(text_lm , file_dir, asr_model_name + '-' + feature_model_name + '-summary.txt', 'philschmid/bart-large-cnn-samsum')
-            summarized_text = summarize(text_lm , file_dir, 'dialogue.txt', 'philschmid/bart-large-cnn-samsum') # only interested in text
+            summarized_text = summarize(text_lm , file_dir, 'dialogue.txt') # only interested in text
             return summarized_text
         else:
             print("unexpected behavior, file missing when summarization and benchmark ")
@@ -76,7 +90,9 @@ def main(text_lm):
         'execution_time' : str(datetime.timedelta(seconds= t_end - t_start))
     }
 
-def summarize(text, file_dir, file_name, model_api_or_path):
+# expected model and tokenizer from global variable.
+# so can reduce time execution in loading it
+def summarize(text, file_dir, file_name):
     save_model = False
     summary_path = file_dir + '/summary'
     summary_file_path = summary_path + '/' + file_name
@@ -89,29 +105,10 @@ def summarize(text, file_dir, file_name, model_api_or_path):
     t_start = time.perf_counter()
     regex = r'[[0-2][0-9]:[0-9][0-9].[0-9][0-9] - [0-2][0-9]:[0-9][0-9].[0-9][0-9]]'
 
-    # model_name = 'philschmid/bart-large-cnn-samsum' #1024
-    model_name = model_api_or_path
-    
-    path_model_summarization = 'model/summarization'
-    os.makedirs(path_model_summarization, exist_ok=True)
-    path_model_summarization += '/' + str(model_api_or_path)
-    
-    if(os.path.exists(path_model_summarization)):
-        model_name = path_model_summarization
-    else:
-        model_name = model_api_or_path
-        save_model = True
-    
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    
-    if(save_model):
-        tokenizer.save_pretrained(path_model_summarization)
-        model.save_pretrained(path_model_summarization)
-
     conversation = text
     # conversation = re.sub(r'[[0-2][0-9]:[0-9][0-9].[0-9][0-9] - [0-2][0-9]:[0-9][0-9].[0-9][0-9]]', '', conversation)
-    conversation = re.sub(r'[[0-9][0-9]:[0-9][0-9].[0-9][0-9] - [0-2][0-9]:[0-9][0-9].[0-9][0-9]]', '', conversation) # i also duno why, but linux appear 30 hours
+    conversation = re.sub(r'[[0-9][0-9]:[0-9][0-9].[0-9][0-9] - [0-2][0-9]:[0-9][0-9].[0-9][0-9]]', '', conversation) #remove string for audio timestamp
+    
     conversation = conversation[:3000]
     # print(conversation, 'truncated text')
 
@@ -187,32 +184,6 @@ def benchmark(file_dir, hypothesis, compare_file_name):
         fp.write('end')
         fp.write('\n')
 
-# def container_summarization():
-
-#     # message bus data is bytes, then need write to file
-#     text = 'some text to be write and create to a dialogue.txt'
-#     with open('dialogue.txt','w') as fp:
-#         fp.write(text)
-
-#     #if message bus data is text
-#     text = 'some example message to be summarize'
-    
-#     # assume received text from message bug
-#     summarized_text = main(text)
-#     print("printing summarized text")
-#     print(summarized_text)
-    
-#     # return this summarized_text
-    
-# container_summarization()
-
-# mb_config = {
-#     "type": "zmq_tcp",
-#     "echo_service": {
-#         "host": "127.0.0.1",
-#         "port": 8676
-#     }
-# }
 zmq_topic = (
     os.environ.get("ZMQ_TOPIC_TS")
     if os.environ.get("ZMQ_TOPIC_TS") != None

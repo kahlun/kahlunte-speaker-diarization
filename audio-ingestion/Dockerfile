@@ -69,15 +69,12 @@ FROM build
 
 WORKDIR /app
 
-COPY original-vistry-ffmpeg.wav /app
-
 RUN python3.8 -m pip install numpy
 RUN python3.8 -m pip install --upgrade pip
 RUN python3.8 -m pip install scipy==1.8.1
 
 HEALTHCHECK NONE
-
+COPY audio_files /app/audio_files
 COPY audio_ingestion.py /app
-COPY original-vistry-ffmpeg-1-minute.wav /app
-COPY youtube-full-ffmpeg-start_from_1_minute-duration-1-minute.wav /app
+
 CMD python3.8 audio_ingestion.py
