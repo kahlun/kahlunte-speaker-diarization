@@ -1,0 +1,7 @@
+stt_en_conformer_ctc_large-titanet_large-youtube-full-ffmpeg-benchmark.txt compare_file_name
+result
+20.088351546152058 wer (word error rate)
+18.437900128040972 mer (match error rate)
+25.091619628266304 wil (word information lost)
+21.36980666392431 cer (character error rate)
+end
