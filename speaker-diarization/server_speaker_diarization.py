@@ -114,8 +114,8 @@ overwrite_speaker_diarization = True # if output -> model -> wav already exist c
 overwrite_summarization = True # if output -> model -> wav already exist continue summarization
 
 # asr_model_name_list = ['QuartzNet15x5Base-En', 'stt_en_conformer_ctc_large'] # change index to pick model
-model_variant = 'stt_en_conformer_ctc_xlarge'
-# model_variant = 'stt_en_conformer_ctc_large'
+# model_variant = 'stt_en_conformer_ctc_xlarge'
+model_variant = 'stt_en_conformer_ctc_large'
 asr_model_name_list = [model_path + '/'+model_variant+'/010120d9959425c7862c9843960b3235/'+model_variant+'.nemo'] # change index to pick model
 # speaker_embedding_feature_model_name_list = [model_path + '/titanet_large']
 speaker_embedding_feature_model_name_list = [model_path + '/titanet-l/492c0ab8416139171dc18c21879a9e45/titanet-l.nemo']
