@@ -94,6 +94,15 @@ RUN apt install git-all -y
 WORKDIR /home/speaker-diarization/
 COPY requirements.txt /home/speaker-diarization/requirements.txt
 RUN python3.8 -m pip install --upgrade pip && python3.8 -m pip install -r requirements.txt
+#RUN python3.8 -m pip install packaging
+#RUN python3.8 -m pip install setuptools_rust
+#RUN python3.8 -m pip install numpy
+#RUN python3.8 -m pip install pybind11
+#RUN python3.8 -m pip install scipy
+# RUN python3.8 -m pip install -r requirements.txt
+# COPY  data/offline_diarization_with_asr.yaml /home/speaker-diarization/data/offline_diarization_with_asr.yaml
+
+# COPY original-vistry-ffmpeg.wav /home/speaker-diarization
 
 HEALTHCHECK NONE
 
@@ -120,7 +129,29 @@ RUN mkdir -m 777 /tmp/NUMBA_CACHE_DIR /tmp/MPLCONFIGDIR && chmod 777 /home/speak
     && git clone https://github.com/NVIDIA/apex \
     && rm titanet_large_v0.zip stt_en_conformer_ctc_large_1.6.0.zip
 
+# RUN wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/titanet_large/versions/v0/zip -O titanet_large_v0.zip
+# RUN apt install zip -y
+# RUN mkdir -p NeMo_1.9.0rc0/titanet-l/492c0ab8416139171dc18c21879a9e45 && mkdir -p NeMo_1.9.0rc0/stt_en_conformer_ctc_large/010120d9959425c7862c9843960b3235
+# RUN unzip titanet_large_v0.zip -d NeMo_1.9.0rc0/titanet-l/492c0ab8416139171dc18c21879a9e45
 
+# RUN wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/stt_en_conformer_ctc_large/versions/1.6.0/zip -O stt_en_conformer_ctc_large_1.6.0.zip
+# RUN unzip stt_en_conformer_ctc_large_1.6.0.zip -d NeMo_1.9.0rc0/stt_en_conformer_ctc_large/010120d9959425c7862c9843960b3235
+
+# COPY NeMo_1.9.0rc0 /root/.cache/torch/NeMo/NeMo_1.9.0rc0/
+# RUN wget --content-disposition https://raw.githubusercontent.com/NVIDIA/NeMo/main/examples/speaker_tasks/diarization/conf/offline_diarization_with_asr.yaml
+# COPY data/input_manifest.json /home/speaker-diarization/data/input_manifest.json
+
+# RUN wget --content-disposition https://kaldi-asr.org/models/5/4gram_big.arpa.gz
+# RUN gzip -d 4gram_big.arpa.gz
+# RUN mv 4gram_big.arpa /home/speaker-diarization/data
+
+# COPY data/4gram_big.arpa /home/speaker-diarization/data
+
+#install ffmpeg to avoid warning
+# RUN apt-get install -y ffmpeg
+# RUN git clone https://github.com/NVIDIA/apex
+
+#install apex(nvidia) to avoid warning
 WORKDIR /home/speaker-diarization/apex
 ENV TORCH_CUDA_ARCH_LIST='compute capability'
 
@@ -128,7 +159,16 @@ RUN python3.8 -m pip install -v --disable-pip-version-check --no-cache-dir ./
 
 WORKDIR /home/speaker-diarization/
 
+# prevent log from kaldi
+#RUN git clone https://github.com/kaldi-asr/kaldi.git
+#RUN mkdir tmp && mv kaldi tmp/kaldi
+#ENV KALDI_ROOT=/home/speaker-diarization/tmp/kaldi
 COPY double-confirm-data-audio/ground_truth /home/speaker-diarization/double-confirm-data-audio/ground_truth
+
+# COPY server_speaker_diarization.py /home/speaker-diarization/
+#COPY /root/.cache/torch/NeMo/NeMo_1.9.0rc0 /root/.cache/torch/NeMo/NeMo_1.9.0rc0
+#RUN mv /root/.cache/torch/NeMo/NeMo_1.9.0rc0 .
+#RUN mkdir -p model/Nemo/Nemo_1.9.0rc0 && mv /root/.cache/torch/NeMo/NeMo_1.9.0rc0 model/Nemo
 
 RUN wget --content-disposition https://api.ngc.nvidia.com/v2/models/nvidia/nemo/stt_en_conformer_ctc_xlarge/versions/1.10.0/zip -O stt_en_conformer_ctc_xlarge_1.10.0.zip
 RUN mkdir -p model/Nemo/NeMo_1.9.0rc0/stt_en_conformer_ctc_xlarge/010120d9959425c7862c9843960b3235

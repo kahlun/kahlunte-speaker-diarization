@@ -100,6 +100,8 @@ RUN apt install git-lfs && git lfs install
 RUN git clone https://huggingface.co/philschmid/bart-large-cnn-samsum
 RUN pwd
 
+
+
 WORKDIR /home/speaker-diarization/
 
 # COPY model /home/speaker-diarization/model
