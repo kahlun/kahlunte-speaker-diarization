@@ -107,7 +107,7 @@ def summarize(text, file_dir, file_name):
 
     conversation = text
     # conversation = re.sub(r'[[0-2][0-9]:[0-9][0-9].[0-9][0-9] - [0-2][0-9]:[0-9][0-9].[0-9][0-9]]', '', conversation)
-    conversation = re.sub(r'[[0-9][0-9]:[0-9][0-9].[0-9][0-9] - [0-2][0-9]:[0-9][0-9].[0-9][0-9]]', '', conversation) #remove string for audio timestamp
+    conversation = re.sub(r'[[0-9][0-9]:[0-9][0-9].[0-9][0-9] - [0-9][0-9]:[0-9][0-9].[0-9][0-9]]', '', conversation) #remove string for audio timestamp
     
     conversation = conversation[:3000]
     # print(conversation, 'truncated text')

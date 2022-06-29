@@ -23,6 +23,7 @@ profile = lambda f: f
 import json
 import argparse
 
+from pandas import concat
 import eii.msgbus as mb
 import time
 import glob
@@ -64,7 +65,7 @@ from  scipy.io import wavfile
 import logging
 
 # logging.disable(logging.CRITICAL)
-logging.getLogger('nemo_logger').setLevel(logging.ERROR)
+# logging.getLogger('nemo_logger').setLevel(logging.ERROR)
 
 level = logging.DEBUG
 logging.basicConfig(
@@ -80,10 +81,22 @@ log.setLevel(level)
 
 # logging.disable(logging.CRITICAL)
 
+# Argument parsing
+# ap = argparse.ArgumentParser()
+# ap.add_argument('-s', '--service-name', dest='service_name',
+#                 default='speaker_diarization', help='Service name')
+# args = ap.parse_args()
 
 msgbus = None
 service = None
 
+# mb_config = {
+#     "type": "zmq_tcp",
+#     "speaker_diarization": {
+#         "host": "127.0.0.1",
+#         "port": 8675
+#     }
+# }
 
 server_service_name = (
     os.environ.get("ZMQ_TOPIC_SD")
@@ -258,6 +271,7 @@ def speaker_diarization(file_name, data_dir, asr_model_name, feature_model_name)
     # cfg.diarizer.asr.model_path = 'stt_en_conformer_ctc_large'
     cfg.diarizer.asr.model_path = asr_model_name
     # asr_model_name
+    # feature_model_name = 'ecapa_tdnn'
     cfg.diarizer.speaker_embeddings.model_path = feature_model_name
     cfg.diarizer.out_dir = file_dir #Directory to store intermediate files and prediction outputs
     arpa_model_path = os.path.join(shared_files_dir, '4gram_big.arpa')
@@ -424,13 +438,14 @@ try:
         if(received_meta_data['last']):
             log.info('detected final pieces, combining')
             response_blob = dict_file_chunked[id]['data']
-            r = base64.decodebytes(response_blob)
+            # r = base64.decodebytes(response_blob)
             dict_file_chunked.pop(id, None)
-            response_as_np_array = np.frombuffer(r, dtype=np.int32)
+            # response_as_np_array = np.frombuffer(r, dtype=np.int32)
+            response_as_np_array = np.frombuffer(response_blob, dtype=np.int32)
             if 'sampling_rate' in received_meta_data:
                 sampling_rate = received_meta_data['sampling_rate']
             else: 
-                sampling_rate = 16000
+                sampling_rate = received_meta_data
             
             temp_wav_file = 'data/audio_files/' + id + '-server-wav-scipy.wav'
             wavfile.write(temp_wav_file, received_meta_data['sampling_rate'], response_as_np_array)
