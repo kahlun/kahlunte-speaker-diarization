@@ -1,0 +1,9 @@
+respeaker
+webrtcvad
+pocketsphinx
+grpcio
+grpcio-tools
+wave
+protobuf
+numpy
+scipy

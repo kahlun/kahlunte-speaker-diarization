@@ -17,4 +17,6 @@ services:
       - AUDIO_FILE_PATH=youtube-full-ffmpeg-start_from_1_minute-duration-1-minute.wav
       # - AUDIO_FILE_PATH=original-vistry-ffmpeg.wav
       - PYTHONUNBUFFERED= 1
+    # ports:
+    #   - 50054:50054
     privileged: true

@@ -23,9 +23,17 @@ import logging
 import pyaudio
 
 sys.path.append(os.path.abspath(os.path.join("..", "config")))
-import logger as config
+# import logger as config
 
-log = config.get_logger()
+# log = config.get_logger() # no want grpc that module
+level = logging.INFO
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)s] - %(message)s",
+    level=level,
+)
+logging.root.setLevel(level)
+log = logging.getLogger()
+log.setLevel(level)
 
 # part of lun's audio ingestion EII library
 import eii.msgbus as mb
@@ -37,7 +45,9 @@ import numpy as np
 
 WAV_FILE = "audio.wav"
 # WAV_FILE = "how_are_you_doing.wav"
+# AUD_HOST = "localhost:50054"
 AUD_HOST = "localhost:50054"
+# AUD_HOST = "127.0.0.1:50054"
 AUD_CERT = "client_certificates/client.crt"
 AUD_KEY = "client_certificates/client.key"
 AUD_CA = "client_certificates/ca.crt"
@@ -55,10 +65,10 @@ class EII_MB:
         self.configuration = {
             "type": os.environ.get("ZMQ_TYPE") or "zmq_tcp",
             "zmq_tcp_publish": {
-                # "host": os.environ.get("ZMQ_HOST_IP") or "127.0.0.1",
-                "host": "127.0.0.1",
-                "port": 3000,
-                # "port": int(os.environ.get("ZMQ_HOST_PORT")) or 3000,
+                "host": os.environ.get("ZMQ_HOST_IP") or "127.0.0.1",
+                # "host": "127.0.0.1",
+                # "port": 3000,
+                "port": int(os.environ.get("ZMQ_HOST_PORT")) or 3000,
             },
         }
 
@@ -69,6 +79,7 @@ class EII_MB:
 def run():
     try:
         if envi.lower() == ENV_TYPE:
+            log.info("aaaaaaaaaaaaaaaaaaaa")
             channel = grpc.insecure_channel(audio_ingestion_host)
             log.info("Recognized to be DEV Environment")
         else:
@@ -124,12 +135,12 @@ def run():
                 msgbus = None
                 publisher = None
 
-                # topic = os.environ.get("ZMQ_TOPIC") or "audio_for_speaker_diarization"
-                topic = "audio_for_speaker_diarization"
+                topic = os.environ.get("ZMQ_TOPIC") or "audio_for_speaker_diarization"
+                # topic = "audio_for_speaker_diarization"
                 # audio_file_path = 'original-vistry-ffmpeg-1-minute.wav'
                 audio_file_path = WAV_FILE
-                interval = 10
-                # interval = int(os.environ.get("PUBLISH_INTERVAL")) or 10
+                # interval = 10
+                interval = int(os.environ.get("PUBLISH_INTERVAL")) or 10
                 # audio_file_path = os.environ.get("AUDIO_FILE_PATH") or 'original-vistry-ffmpeg-1-minute.wav'
 
                 log.debug("Initializing EII Message Bus Configuration")
@@ -218,7 +229,7 @@ def run():
     print('end of audio ingestion client handler.')
 
 if __name__ == "__main__":
-    logging.basicConfig()
+    # logging.basicConfig()
 
     pyaudio_instance = pyaudio.PyAudio()
     default_device = pyaudio_instance.get_default_input_device_info()

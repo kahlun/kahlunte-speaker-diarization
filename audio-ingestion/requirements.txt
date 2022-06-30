@@ -1,0 +1,10 @@
+respeaker==0.6.2
+webrtcvad==2.0.10
+pocketsphinx==0.1.15
+grpcio==1.45.0
+grpcio-tools==1.45.0
+wave==0.0.2
+protobuf==3.19.4
+numpy==1.22.3
+scipy==1.8.0
+pyaudio==0.2.11
