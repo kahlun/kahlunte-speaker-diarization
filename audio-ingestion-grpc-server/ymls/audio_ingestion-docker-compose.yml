@@ -20,14 +20,9 @@ services:
       - run_mode=wav
       - PYUSB_DEBUG_LEVEL=debug
       - PULSE_SERVER=unix:/run/user/1000/pulse/native
-      # - PULSE_SERVER=unix:/run/user/root/pulse/native
-    # ports:
-      # - "50054:50054"
     user: 1000:1000
     network_mode: "host" #extra thing from copied source code.
-    # user: root:root
     volumes:
       - /run/user/1000/pulse/native:/run/user/1000/pulse/native
-      # - /run/user/root/pulse/native:/run/user/root/pulse/native
       - ${PWD}/src/audio_data_samples/:/home/audio_ingestion/audio_data_samples/
       - ${PWD}/certificates/:/home/audio_ingestion/server_certificates/
