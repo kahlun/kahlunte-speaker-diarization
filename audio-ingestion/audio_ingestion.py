@@ -66,8 +66,6 @@ class EII_MB:
             "type": os.environ.get("ZMQ_TYPE") or "zmq_tcp",
             "zmq_tcp_publish": {
                 "host": os.environ.get("ZMQ_HOST_IP") or "127.0.0.1",
-                # "host": "127.0.0.1",
-                # "port": 3000,
                 "port": int(os.environ.get("ZMQ_HOST_PORT")) or 3000,
             },
         }
@@ -79,7 +77,6 @@ class EII_MB:
 def run():
     try:
         if envi.lower() == ENV_TYPE:
-            log.info("aaaaaaaaaaaaaaaaaaaa")
             channel = grpc.insecure_channel(audio_ingestion_host)
             log.info("Recognized to be DEV Environment")
         else:
