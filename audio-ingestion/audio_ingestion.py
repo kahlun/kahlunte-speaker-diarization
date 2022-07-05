@@ -44,10 +44,12 @@ import hashlib
 import numpy as np
 
 WAV_FILE = "audio.wav"
+# WAV_FILE = os.environ.get("AUDIO_FILE_PATH") or 'original-vistry-ffmpeg-1-minute.wav'
+
 # WAV_FILE = "how_are_you_doing.wav"
 # AUD_HOST = "localhost:50054"
-AUD_HOST = "localhost:50054"
-# AUD_HOST = "127.0.0.1:50054"
+# AUD_HOST = "localhost:50054"
+AUD_HOST = "127.0.0.1:50054"
 AUD_CERT = "client_certificates/client.crt"
 AUD_KEY = "client_certificates/client.key"
 AUD_CA = "client_certificates/ca.crt"
@@ -117,7 +119,9 @@ def run():
                 ## handler received audio                
                 rate, data = read(io.BytesIO(i.msg_audio)) # will use in client eii audio ingestion part
                 # write(WAV_FILE, rate, data)
-                logging.info("Data written onto {}".format(WAV_FILE))
+                # import time; 
+                # time.sleep(1000000000)
+                # logging.info("Data written onto {}".format(WAV_FILE))
                 
                 # implement eii audio ingestion
                 # level = logging.DEBUG
@@ -135,7 +139,7 @@ def run():
                 topic = os.environ.get("ZMQ_TOPIC") or "audio_for_speaker_diarization"
                 # topic = "audio_for_speaker_diarization"
                 # audio_file_path = 'original-vistry-ffmpeg-1-minute.wav'
-                audio_file_path = WAV_FILE
+                audio_file_path = 'audio_files/' + WAV_FILE
                 # interval = 10
                 interval = int(os.environ.get("PUBLISH_INTERVAL")) or 10
                 # audio_file_path = os.environ.get("AUDIO_FILE_PATH") or 'original-vistry-ffmpeg-1-minute.wav'
@@ -157,7 +161,8 @@ def run():
                 log.info("Running...")
                 try:
 
-                    # sampling_rate_eii, data = read(audio_file_path)
+                    # sampling_rate_eii, data = read('audio_files/' + 'original-vistry-ffmpeg-1-minute.wav')
+                    # sampling_rate_eii, data = read(wav)
                     to_send_base64 =  base64.b64encode(data)
                     hash = hashlib.sha1()
                     hash.update(str(time.time()).encode('utf-8'))
@@ -198,8 +203,8 @@ def run():
                             time.sleep(0.1) # very important to sleep after assume it is published.
 
                     meta['last'] = True
-                    # publisher.publish((meta, to_send_base64))
                     publisher.publish((meta, to_send_base64))
+                    # publisher.publish((meta, data))
                     time.sleep(0.1) # very important to sleep after assume it is published.
 
                     log.info("Published...")

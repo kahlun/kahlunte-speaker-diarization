@@ -80,12 +80,14 @@ COPY protos /app/protos
 # RUN python3.8 -m pip install grpcio
 # RUN python3.8 -m pip install grpcio-tools
 # important part, to avoid _portaudio import module not found.
+
 RUN apt-get update
 RUN apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0 -y
 RUN apt-get install python3.8 python3.8-dev python3-pip -y
 RUN apt-get install -y portaudio19-dev
 RUN python3.8 -m pip install pyaudio==0.2.11
 #
+
 RUN apt install -y swig \
     portaudio19-dev \
     libpulse-dev \

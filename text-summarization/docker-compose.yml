@@ -13,5 +13,5 @@ services:
       - ZMQ_HOST_PORT_TS=3001
     network_mode: "host"
     # user: 1000:1000
-    volumes:
-      - /run/user/1000/pulse/native:/run/user/1000/pulse/native
+    # volumes:
+      # - /run/user/1000/pulse/native:/run/user/1000/pulse/native

@@ -438,10 +438,10 @@ try:
         if(received_meta_data['last']):
             log.info('detected final pieces, combining')
             response_blob = dict_file_chunked[id]['data']
-            # r = base64.decodebytes(response_blob)
+            r = base64.decodebytes(response_blob)
             dict_file_chunked.pop(id, None)
-            # response_as_np_array = np.frombuffer(r, dtype=np.int32)
-            response_as_np_array = np.frombuffer(response_blob, dtype=np.int32)
+            response_as_np_array = np.frombuffer(r, dtype=np.int32)
+            # response_as_np_array = np.frombuffer(response_blob, dtype=np.int32)
             if 'sampling_rate' in received_meta_data:
                 sampling_rate = received_meta_data['sampling_rate']
             else: 
