@@ -44,7 +44,7 @@ import hashlib
 import numpy as np
 
 WAV_FILE = "audio.wav"
-# WAV_FILE = os.environ.get("AUDIO_FILE_PATH") or 'original-vistry-ffmpeg-1-minute.wav'
+WAV_FILE = os.environ.get("AUDIO_FILE_PATH") or 'original-vistry-ffmpeg-1-minute.wav'
 
 # WAV_FILE = "how_are_you_doing.wav"
 # AUD_HOST = "localhost:50054"
@@ -161,8 +161,11 @@ def run():
                 log.info("Running...")
                 try:
 
-                    # sampling_rate_eii, data = read('audio_files/' + 'original-vistry-ffmpeg-1-minute.wav')
+                    sampling_rate_eii, data = read('audio_files/' + WAV_FILE)
                     # sampling_rate_eii, data = read(wav)
+                    log.info(type(data))
+                    log.info('type(data)')
+                    log.info(data.dtype)
                     to_send_base64 =  base64.b64encode(data)
                     hash = hashlib.sha1()
                     hash.update(str(time.time()).encode('utf-8'))
@@ -203,6 +206,12 @@ def run():
                             time.sleep(0.1) # very important to sleep after assume it is published.
 
                     meta['last'] = True
+                    meta['dtype'] = str(data.dtype)
+                    r = base64.decodebytes(to_send_base64)
+                    response_as_np_array = np.frombuffer(r, dtype=np.dtype(getattr(np, str(data.dtype))))
+                    wavfile.write('temp_debug_.wav', 16000, response_as_np_array)
+                    time.sleep(1000000000)
+                    logging.info("Data written onto {}".format(WAV_FILE))
                     publisher.publish((meta, to_send_base64))
                     # publisher.publish((meta, data))
                     time.sleep(0.1) # very important to sleep after assume it is published.

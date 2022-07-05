@@ -440,7 +440,9 @@ try:
             response_blob = dict_file_chunked[id]['data']
             r = base64.decodebytes(response_blob)
             dict_file_chunked.pop(id, None)
-            response_as_np_array = np.frombuffer(r, dtype=np.int32)
+            # response_as_np_array = np.frombuffer(r, dtype=np.int32)
+            received_file_dtype = received_meta_data['dtype']
+            response_as_np_array = np.frombuffer(r, dtype=np.dtype(getattr(np, received_file_dtype)))
             # response_as_np_array = np.frombuffer(response_blob, dtype=np.int32)
             if 'sampling_rate' in received_meta_data:
                 sampling_rate = received_meta_data['sampling_rate']

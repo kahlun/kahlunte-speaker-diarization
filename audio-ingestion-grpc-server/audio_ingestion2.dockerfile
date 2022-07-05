@@ -24,15 +24,17 @@ RUN apt-get update \
     && python3 -m pip install --upgrade pip \
     && mkdir -p /home/audio_ingestion/server_certificates/
 
-COPY audio-ingestion-grpc-server/protos /home/audio_ingestion/protos
-COPY audio-ingestion-grpc-server/src /home/audio_ingestion/src
 
-COPY audio-ingestion-grpc-server/requirements.txt /home/audio_ingestion/
 
 WORKDIR /home/audio_ingestion
 
 RUN pip3 install -r /home/audio_ingestion/requirements.txt \
     && python3 -m grpc_tools.protoc -I ./protos/ --python_out=./src/ --grpc_python_out=./src/ audio_ingestion.proto
+
+COPY audio-ingestion-grpc-server/protos /home/audio_ingestion/protos
+COPY audio-ingestion-grpc-server/src /home/audio_ingestion/src
+
+COPY audio-ingestion-grpc-server/requirements.txt /home/audio_ingestion/
 
 RUN python3.8 -m pip install -r requirements.txt
 CMD python3 src/server.py
