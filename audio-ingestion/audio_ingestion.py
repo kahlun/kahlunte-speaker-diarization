@@ -77,47 +77,47 @@ class EII_MB:
 
 
 def run():
-    try:
-        if envi.lower() == ENV_TYPE:
-            channel = grpc.insecure_channel(audio_ingestion_host)
-            log.info("Recognized to be DEV Environment")
-        else:
-            log.info("Recognized to be PROD Environment")
-            cert = open(AUD_CERT, "rb").read()
-            key = open(AUD_KEY, "rb").read()
-            ca_cert = open(AUD_CA, "rb").read()
-            credentials = grpc.ssl_channel_credentials(ca_cert, key, cert)
-            log.debug("Updated the Client Credentials")
-            channel = grpc.secure_channel(
-                target=audio_ingestion_host, credentials=credentials
-            )
-        log.info("Connecting to server...")
-        stub = audio_ingestion_pb2_grpc.AudioIngestionStub(channel)
-        req = audio_ingestion_pb2.BatchIngestRequest()
-        req.sampling_rate = sampling_rate
-        req.sample_width = sample_width
-        req.channel_num = channel_num
-        req.compression_type = compression_type
-        req.audio_device_name = audio_device_name
-        req.wake_word = wake_word
-        req.notifier_status = notifier_status
-        req.max_record_time = max_record_time
-        req.vad_timeout = vad_timeout
-        log.info("Req parameters :: {}".format(req))
-        response = stub.AudioIngestBatchInit(req)
-        for i in response:
-            log.info(
-                "Message Type :: {}".format(
-                    audio_ingestion_pb2.AudioIngestResponse.MessageType.Name(i.msg_type)
-                )
-            )
-            if (
-                audio_ingestion_pb2.AudioIngestResponse.MessageType.Name(i.msg_type)
-                == "audio"
-            ):
+    # try:
+    #     if envi.lower() == ENV_TYPE:
+    #         channel = grpc.insecure_channel(audio_ingestion_host)
+    #         log.info("Recognized to be DEV Environment")
+    #     else:
+    #         log.info("Recognized to be PROD Environment")
+    #         cert = open(AUD_CERT, "rb").read()
+    #         key = open(AUD_KEY, "rb").read()
+    #         ca_cert = open(AUD_CA, "rb").read()
+    #         credentials = grpc.ssl_channel_credentials(ca_cert, key, cert)
+    #         log.debug("Updated the Client Credentials")
+    #         channel = grpc.secure_channel(
+    #             target=audio_ingestion_host, credentials=credentials
+    #         )
+    #     log.info("Connecting to server...")
+    #     stub = audio_ingestion_pb2_grpc.AudioIngestionStub(channel)
+    #     req = audio_ingestion_pb2.BatchIngestRequest()
+    #     req.sampling_rate = sampling_rate
+    #     req.sample_width = sample_width
+    #     req.channel_num = channel_num
+    #     req.compression_type = compression_type
+    #     req.audio_device_name = audio_device_name
+    #     req.wake_word = wake_word
+    #     req.notifier_status = notifier_status
+    #     req.max_record_time = max_record_time
+    #     req.vad_timeout = vad_timeout
+    #     log.info("Req parameters :: {}".format(req))
+    #     response = stub.AudioIngestBatchInit(req)
+    #     for i in response:
+    #         log.info(
+    #             "Message Type :: {}".format(
+    #                 audio_ingestion_pb2.AudioIngestResponse.MessageType.Name(i.msg_type)
+    #             )
+    #         )
+    #         if (
+    #             audio_ingestion_pb2.AudioIngestResponse.MessageType.Name(i.msg_type)
+    #             == "audio"
+    #         ):
 
                 ## handler received audio                
-                rate, data = read(io.BytesIO(i.msg_audio)) # will use in client eii audio ingestion part
+                # rate, data = read(io.BytesIO(i.msg_audio)) # will use in client eii audio ingestion part
                 # write(WAV_FILE, rate, data)
                 # import time; 
                 # time.sleep(1000000000)
@@ -224,20 +224,20 @@ def run():
                     if publisher is not None:
                         publisher.close()
                 
-            else:
-                log.info(
-                    "Message Control: {}".format(
-                        audio_ingestion_pb2.AudioIngestResponse.MessageControl.Name(
-                            i.msg_control
-                        )
-                    )
-                )
-                log.info("Device Name: {}".format(i.audio_device))
-            break
-    except Exception as e:
-        log.error("Received Exception: {}".format(e))
+            # else:
+            #     log.info(
+            #         "Message Control: {}".format(
+            #             audio_ingestion_pb2.AudioIngestResponse.MessageControl.Name(
+            #                 i.msg_control
+            #             )
+            #         )
+            #     )
+            #     log.info("Device Name: {}".format(i.audio_device))
+            # break
+    # except Exception as e:
+    #     log.error("Received Exception: {}".format(e))
 
-    print('end of audio ingestion client handler.')
+    # print('end of audio ingestion client handler.')
 
 if __name__ == "__main__":
     # logging.basicConfig()
