@@ -1,0 +1,7 @@
+inflect>=5.3.0
+tqdm>=4.54.1
+grpcio
+grpcio-tools
+pyllist
+
+

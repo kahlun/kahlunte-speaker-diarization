@@ -1,0 +1,24 @@
+# Copyright (C) 2021 Intel Corporation
+# SPDX-License-Identifier: BSD-3-Clause
+version: "3"
+services:
+  va_bot:
+    image: voice-announcement-bot-eii:1.0
+    environment:
+      - block_input=True
+      - speaker_id=19
+      - device=CPU
+      - alpha=1.0
+      # - tts_server_endpoint=localhost:50052
+      - tts_server_endpoint=0.0.0.0:50052
+      - samplerate=22050
+      - ZMQ_TYPE=zmq_tcp
+      - ZMQ_HOST_IP=127.0.0.1
+      - ZMQ_HOST_PORT=3000
+      - ZMQ_TOPIC=tts_zmq_topic
+      - PULSE_SERVER=unix:/run/user/1000/pulse/native
+      - cache=1
+    network_mode: "host"
+    user: 1000:1000
+    volumes:
+      - /run/user/1000/pulse/native:/run/user/1000/pulse/native

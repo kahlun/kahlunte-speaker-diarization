@@ -1,0 +1,11 @@
+services:
+  tts:
+    image: tts:1.0
+    environment:
+      # - http_proxy
+      # - https_proxy
+      - cache=True
+    # ports:
+    #   - "50052:50052"
+    network_mode: "host"
+

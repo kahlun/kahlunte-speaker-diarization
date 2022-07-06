@@ -1,0 +1,55 @@
+/*
+ Copyright (C) 2021 Intel Corporation
+ SPDX-License-Identifier: BSD-3-Clause
+*/
+
+/**
+* TTS SDK for conversational-AI chatbot project.
+*
+* This has the TTS service APIs for the Speech to text which supports Forward Tacotron with melgan with 39 differnet speakers.
+*/
+syntax = "proto3";
+
+package tts;
+
+/**
+* This is the TTS service for conversational-AI chatbot project.
+*/
+service Tts {
+  
+  // This takes string as input and returns output as audio(.wav)  file. 
+  rpc TextToSpeech (TextToSpeechRequest) returns (TextToSpeechReply) {}
+  // This takes bool as input to toggle caching in the server and returns ack
+  rpc EnableCaching (CachingRequest) returns (CachingResponse) {}
+  // rpc call to clear the cache
+  rpc ClearCache (CachingRequest) returns (CachingResponse) {}
+}
+
+// The request message containing the text data to be converted to speech
+message TextToSpeechRequest {
+  int32 speaker_id = 1; // speaker_id is the list of the speaker you want range(1,39), if set to  -1  gender and style are needed to create speaker id
+  string text_data = 2; // text_data contains the text to be converted to speech
+  string device = 3; // contains the target device CPU/GPU
+  float alpha = 4; //Coefficient for controlling of the speech time (should be greater than 0.5 and less than 2.0) dafalut = 1
+  bool cache = 5; //wheather to cache this request or not
+  string gender = 6; // gender of the speaker, required only if s_id is -1
+  float style = 7; // style of the speaker , required only if s_id is -1
+  int32 tts_model = 8; // tts model selection (1-Forward tacotron + Melgan) (2 - Glow-TTS + HifiGan)
+}
+
+// The response message containing the Speech Recognition Output
+message TextToSpeechReply {
+  bytes audio_output = 1; // audio output as a result of text to speech
+  float inference_time = 2; // Actual inference time taken by the model in seconds
+}
+
+//The request message to enable caching at the server side
+message CachingRequest {
+  bool enable_caching = 1;
+}
+
+//The response message(ack) for caching request
+message  CachingResponse {
+  string status = 1;
+}
+

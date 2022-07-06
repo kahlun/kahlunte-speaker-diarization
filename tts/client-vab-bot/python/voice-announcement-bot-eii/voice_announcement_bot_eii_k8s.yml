@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: voice-announcement-bot-eii
+spec:
+  hostNetwork: true
+  volumes:
+  - name: device-vol
+    hostPath:
+      path: /run/user/1000/pulse/native
+  securityContext:
+    runAsUser: 1000
+  containers:
+    - name: va-bot
+      image: voice-announcement-bot-eii:1.0
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: block_input
+          value: "True"
+        - name: speaker_id
+          value: "19"
+        - name: device
+          value: "CPU"
+        - name: alpha
+          value: "1.0"
+        - name: samplerate
+          value: "22050"
+        - name: tts_server_endpoint
+          value: "localhost:30009"
+        - name: ZMQ_HOST_IP
+          value: "127.0.0.1"
+        - name: ZMQ_HOST_PORT
+          value: "3000"
+        - name: ZMQ_TOPIC
+          value: tts_zmq_topic
+        - name: ZMQ_TYPE
+          value: zmq_tcp
+        - name: PULSE_SERVER
+          value: "unix:/run/user/1000/pulse/native"
+      volumeMounts:
+        - mountPath: /run/user/1000/pulse/native
+          name: device-vol
