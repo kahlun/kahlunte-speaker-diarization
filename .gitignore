@@ -145,3 +145,4 @@ speaker-diarization/input_manifest.json
 speaker-diarization/server_speaker_diarization.py.lprof
 speaker-diarization/test.py
 test.py
+tts

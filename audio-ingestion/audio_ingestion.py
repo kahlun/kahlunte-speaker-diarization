@@ -150,7 +150,7 @@ def run():
                 log.debug(f'ZMQ Type = \'{mb_config["type"]}\'')
                 log.debug(f'ZMQ Host IP = {mb_config["zmq_tcp_publish"]["host"]}')
                 log.debug(f'ZMQ Host Port = {mb_config["zmq_tcp_publish"]["port"]}')
-                log.debug(f"Interval between each publish = {interval} seconds")
+                # log.debug(f"Interval between each publish = {interval} seconds")
 
                 log.debug("Initializing message bus context")
                 msgbus = mb.MsgbusContext(mb_config)
@@ -163,9 +163,9 @@ def run():
 
                     sampling_rate_eii, data = read('audio_files/' + WAV_FILE)
                     # sampling_rate_eii, data = read(wav)
-                    log.info(type(data))
-                    log.info('type(data)')
-                    log.info(data.dtype)
+                    # log.info(type(data))
+                    # log.info('type(data)')
+                    # log.info(data.dtype)
                     to_send_base64 =  base64.b64encode(data)
                     hash = hashlib.sha1()
                     hash.update(str(time.time()).encode('utf-8'))
@@ -211,7 +211,7 @@ def run():
                     response_as_np_array = np.frombuffer(r, dtype=np.dtype(getattr(np, str(data.dtype))))
                     # wavfile.write('temp_debug_.wav', 16000, response_as_np_array)
                     # time.sleep(1000000000)
-                    logging.info("Data written onto {}".format(WAV_FILE))
+                    # logging.info("Data written onto {}".format(WAV_FILE))
                     publisher.publish((meta, to_send_base64))
                     # publisher.publish((meta, data))
                     time.sleep(0.1) # very important to sleep after assume it is published.

@@ -10,7 +10,8 @@ services:
       - ZMQ_TOPIC_TS=text_summarization
       - ZMQ_TYPE_TS=zmq_tcp
       - ZMQ_HOST_IP_TS=127.0.0.1
-      - ZMQ_HOST_PORT_TS=3001
+      - ZMQ_HOST_PORT_TS=3002
+      - TTS_OUTPUT=1 # whether to do text to speech
     network_mode: "host"
     # user: 1000:1000
     # volumes:

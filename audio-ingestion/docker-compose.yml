@@ -15,7 +15,7 @@ services:
       - PUBLISH_INTERVAL=10
       # - AUDIO_FILE_PATH=original-vistry-ffmpeg-1-minute.wav
       # - AUDIO_FILE_PATH=youtube-full-ffmpeg-start_from_1_minute-duration-1-minute.wav
-      # - AUDIO_FILE_PATH=converted-icetec-drive-through.wav
+      - AUDIO_FILE_PATH=converted-icetec-drive-through.wav
       # - AUDIO_FILE_PATH=original-vistry-ffmpeg.wav
       - PYTHONUNBUFFERED= 1
     # ports:

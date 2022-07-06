@@ -9,12 +9,12 @@ services:
       - ZMQ_TOPIC_SD=audio_for_speaker_diarization
       - ZMQ_TYPE_SD=zmq_tcp
       - ZMQ_HOST_IP_SD=127.0.0.1
-      - ZMQ_HOST_PORT_SD=3000
+      - ZMQ_HOST_PORT_SD=3001
       - PYTHONUNBUFFERED= 1
       - ZMQ_TOPIC_TS=text_summarization
       - ZMQ_TYPE_TS=zmq_tcp
       - ZMQ_HOST_IP_TS=127.0.0.1
-      - ZMQ_HOST_PORT_TS=3001
+      - ZMQ_HOST_PORT_TS=3002
       - KALDI_ROOT=/home/speaker-diarization/tmp/kaldi
     network_mode: "host"
     # user: 1000:1000

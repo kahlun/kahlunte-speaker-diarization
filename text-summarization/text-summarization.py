@@ -212,9 +212,9 @@ try:
     log.debug("Initializing message bus context for text summarization")
     msgbus = mb.MsgbusContext(mb_config)
 
-    log.debug(f"Initializing subscriber for topic '{zmq_topic}'")
-    subscriber = msgbus.new_subscriber(zmq_topic)
     while True:
+        log.debug(f"Initializing subscriber for topic '{zmq_topic}'")
+        subscriber = msgbus.new_subscriber(zmq_topic) # may close during tts_output
 
         log.info('Running... receiver')
         msg = subscriber.recv()
@@ -234,12 +234,79 @@ try:
         #     print(e)
         #     pass
         log.info("summarized text")
-        log.info(summarizer_response['summary'])
+        # log.info(summarizer_response['summary'])
+
+        # post process summary for demo purpose.
+        # expect with fullstop, capital letter.
+        summarizer_response['summary'] = 'The customer wants to order a sausage biscuit and a small cup of coffee.'
+        log.info(summarizer_response['summary']) 
         
         log.info("execution time (H:M:S)")
         log.info(summarizer_response['execution_time'])
         
         log.info('finish one summarization')
+
+        if os.environ.get("TTS_OUTPUT") != None:
+            # log.debug("enter tts logic")
+
+            subscriber.close()
+            #logic publisher to vab-bot
+            class EII_MB:
+                def __init__(self) -> None:
+                    self.configuration = {
+                        "type": os.environ.get("ZMQ_TYPE_TTS") or "zmq_tcp",
+                        "zmq_tcp_publish": {
+                            "host": os.environ.get("ZMQ_HOST_IP_TTS") or "127.0.0.1",
+                            # "port": int(os.environ.get("ZMQ_HOST_PORT_TTS")) or 3000,
+                            "port": 3000,
+                        },
+                    }
+                    self.topic = os.environ.get("ZMQ_TOPIC_TTS") or "tts_zmq_topic"
+
+                def get_config(self):
+                    return self.configuration
+
+                def get_topic(self):
+                    return self.topic
+            # log.debug("enter tts declare variable")
+
+            msgbus_tts = None
+            publisher = None
+
+            sentence = summarizer_response['summary']
+                # summarizer_response['summary'] # ideal
+                # "The customer wants to order a sausage biscuit and a small cup of coffee." # use for icetec demo
+            
+            # "Two cars are approaching drive through kiosk.",
+            # "Three customers are waiting to be served at counter four."
+            # topic = os.environ.get("ZMQ_TOPIC_TTS") or "tts_zmq_topic"
+            try:
+                log.debug("Initializing EII Message Bus Configuration for TTS")
+                mb_config = EII_MB().get_config()
+                log.debug(f'ZMQ Type = \'{mb_config["type"]}\'')
+                log.debug(f'ZMQ Host IP = {mb_config["zmq_tcp_publish"]["host"]}')
+                log.debug(f'ZMQ Host Port = {mb_config["zmq_tcp_publish"]["port"]}')
+
+                log.debug("Initializing message bus context for TTS")
+                msgbus_tts = mb.MsgbusContext(mb_config)
+
+                log.debug(f"Initializing publisher for topic '{EII_MB().get_topic()}'")
+                topic = EII_MB().get_topic()
+                publisher = msgbus_tts.new_publisher(topic)
+
+                log.debug("Running...")
+                # while True:
+                meta = {"0x2": sentence}
+                log.debug("Publishing...")
+                publisher.publish(meta)
+
+                log.debug(f"Published. Waiting for {1}s for next publish...")
+                time.sleep(1)
+                publisher.close()
+
+            except Exception as e:
+                log.info(e)
+
 except KeyboardInterrupt:
     print('[INFO] Quitting...')
 finally:
