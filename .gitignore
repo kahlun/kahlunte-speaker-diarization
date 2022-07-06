@@ -127,3 +127,21 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#ignore from server
+applications.ai.conversational-ai.audioingestion/
+audio-ingestion-grpc-server/protos/
+audio-ingestion/audio_files/converted-icetec-drive-through.wav
+audio-ingestion/audio_files/order-mcd-america.wav
+audio-ingestion/audio_files/original-vistry-ffmpeg-1-minute.wav
+audio-ingestion/audio_files/original-vistry-ffmpeg.wav
+audio-ingestion/audio_files/vistry-ffmpeg-1m05s-2m05s.wav
+audio-ingestion/audio_ingestion (wav-stable).py
+audio-ingestion/protos/
+speaker-diarization/data/
+speaker-diarization/decoder.onnx
+speaker-diarization/encoder.onnx
+speaker-diarization/input_manifest.json
+speaker-diarization/server_speaker_diarization.py.lprof
+speaker-diarization/test.py
+test.py
