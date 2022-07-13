@@ -111,6 +111,8 @@ COPY requirements.txt requirements.txt
 RUN python3.8 -m pip install --upgrade pip
 
 RUN python3.8 -m pip install -r requirements.txt
+COPY protos /app/protos
+
 RUN python3.8 -m grpc_tools.protoc -I /app/protos/ --python_out=/app --grpc_python_out=/app audio_ingestion.proto
 RUN python3.8 -m grpc_tools.protoc -I  /app/protos/ --python_out=/app --grpc_python_out=/app asr.proto
 # CMD python3.8 -c "import pyaudio"
@@ -126,7 +128,6 @@ RUN python3.8 -m grpc_tools.protoc -I  /app/protos/ --python_out=/app --grpc_pyt
 # # RUN python3.8 -m pip install protobuf
 # #RUN python3.8 -m pip install grpc
 COPY audio_files /app/audio_files
-COPY protos /app/protos
 COPY audio_ingestion.py /app
 # #CMD python3.8 -c "import time; time.sleep(1000000000)"
 CMD python3.8 audio_ingestion.py
