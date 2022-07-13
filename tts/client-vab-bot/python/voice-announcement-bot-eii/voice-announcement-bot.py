@@ -196,6 +196,10 @@ def playback_audio_data():
                 else 22050
             )
             sd.play(audio_file, samplerate)
+            from  scipy.io import wavfile 
+            
+            wavfile.write('tts-wav-output.wav', samplerate, audio_file)
+            
             # Wait until the audio file is fully played
             sd.wait()
 
