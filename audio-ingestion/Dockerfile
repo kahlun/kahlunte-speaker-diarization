@@ -74,8 +74,7 @@ WORKDIR /app
 # RUN python3.8 -m pip install scipy==1.8.1
 
 HEALTHCHECK NONE
-COPY audio_files /app/audio_files
-COPY protos /app/protos
+
 
 # RUN python3.8 -m pip install grpcio
 # RUN python3.8 -m pip install grpcio-tools
@@ -126,6 +125,8 @@ RUN python3.8 -m grpc_tools.protoc -I  /app/protos/ --python_out=/app --grpc_pyt
 # # RUN python3.8 -m pip install grpcio
 # # RUN python3.8 -m pip install protobuf
 # #RUN python3.8 -m pip install grpc
+COPY audio_files /app/audio_files
+COPY protos /app/protos
 COPY audio_ingestion.py /app
 # #CMD python3.8 -c "import time; time.sleep(1000000000)"
 CMD python3.8 audio_ingestion.py
