@@ -67,15 +67,20 @@ import logging
 # logging.disable(logging.CRITICAL)
 # logging.getLogger('nemo_logger').setLevel(logging.ERROR)
 
-level = logging.DEBUG
+# level = logging.DEBUG
+LOGGING_LEVEL = (
+    os.environ.get("LOGGING_LEVEL")
+    if os.environ.get("LOGGING_LEVEL") != None
+    else 20
+)
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)s] - %(message)s",
-    level=level,
+    level=LOGGING_LEVEL,
 )
-logging.root.setLevel(level)
+logging.root.setLevel(LOGGING_LEVEL)
 log = logging.getLogger()
-log.setLevel(level)
-# logging.getLogger('nemo_logger').propagate = False
+log.setLevel(LOGGING_LEVEL)
+logging.getLogger('nemo_logger').propagate = False
 
 
 

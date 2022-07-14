@@ -29,6 +29,12 @@ import logger as config
 log = config.get_logger()
 log.debug("Path: {}".format(os.path.abspath(os.path.join("..", "config"))))
 
+LOGGING_LEVEL = (
+    os.environ.get("LOGGING_LEVEL")
+    if os.environ.get("LOGGING_LEVEL") != None
+    else 20
+)
+log.setLevel(LOGGING_LEVEL)
 
 class TtsMessageQueue:
     def __init__(self):

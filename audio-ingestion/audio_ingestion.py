@@ -22,18 +22,22 @@ import json
 import logging
 import pyaudio
 
-sys.path.append(os.path.abspath(os.path.join("..", "config")))
+# sys.path.append(os.path.abspath(os.path.join("..", "config")))
 # import logger as config
 
 # log = config.get_logger() # no want grpc that module
-level = logging.INFO
+LOGGING_LEVEL = (
+    os.environ.get("LOGGING_LEVEL")
+    if os.environ.get("LOGGING_LEVEL") != None
+    else 20 # 20 # info # 10 #debug
+)
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)s] - %(message)s",
-    level=level,
+    level=LOGGING_LEVEL,
 )
-logging.root.setLevel(level)
+logging.root.setLevel(LOGGING_LEVEL)
 log = logging.getLogger()
-log.setLevel(level)
+log.setLevel(LOGGING_LEVEL)
 
 # part of lun's audio ingestion EII library
 import eii.msgbus as mb
@@ -162,6 +166,8 @@ def run():
                 try:
 
                     sampling_rate_eii, data = read('audio_files/' + WAV_FILE)
+                    log.info("found wav file ...")
+                    
                     # sampling_rate_eii, data = read(wav)
                     # log.info(type(data))
                     # log.info('type(data)')
@@ -177,33 +183,33 @@ def run():
                         'id' : unique_key,
                     }
                     total = 0
-                    log.info("Publishing...")
+                    log.info("Publishing the audio file")
                     MAX_MB = 1024 * 1024 * 61
                     # MAX_MB = 66961920 #tested largest file after convert base64
                     chunks_length = int(len(to_send_base64) / MAX_MB)
                     
                     # though size limit issue, because 50mb, 50,221,542 bytes file fail, but < 5mb file pass without sleep.
                     # this is the solution with chunk size + sleep, if send multiple chunk without sleep will fail too.
-                    def send_with_chunks(to_send_base64, meta):
-                        if(chunks_length is not 0): #no need chunk
+                    # def send_with_chunks(to_send_base64, meta):
+                    #     if(chunks_length is not 0): #no need chunk
 
-                            chunks, chunk_size = len(to_send_base64), int(len(to_send_base64)/chunks_length)
-                            to_send_list = [to_send_base64[i:i+chunk_size] for i in range (0, chunks, chunk_size)]
+                    #         chunks, chunk_size = len(to_send_base64), int(len(to_send_base64)/chunks_length)
+                    #         to_send_list = [to_send_base64[i:i+chunk_size] for i in range (0, chunks, chunk_size)]
 
-                            for x in to_send_list:
-                                print('pushed')
-                                total+= len(x)
-                                if(x != to_send_list[-1]):
-                                    print('one chunk')
-                                    publisher.publish((meta, x))
-                                else:
-                                    print('last piece')
-                                    meta['last'] = True
-                                    publisher.publish((meta, x))
-                                time.sleep(0.1) # very important to sleep after assume it is published.
-                        else:
-                            publisher.publish((meta, to_send_base64))
-                            time.sleep(0.1) # very important to sleep after assume it is published.
+                    #         for x in to_send_list:
+                    #             print('pushed')
+                    #             total+= len(x)
+                    #             if(x != to_send_list[-1]):
+                    #                 print('one chunk')
+                    #                 publisher.publish((meta, x))
+                    #             else:
+                    #                 print('last piece')
+                    #                 meta['last'] = True
+                    #                 publisher.publish((meta, x))
+                    #             time.sleep(0.1) # very important to sleep after assume it is published.
+                    #     else:
+                    #         publisher.publish((meta, to_send_base64))
+                    #         time.sleep(0.1) # very important to sleep after assume it is published.
 
                     meta['last'] = True
                     meta['dtype'] = str(data.dtype)

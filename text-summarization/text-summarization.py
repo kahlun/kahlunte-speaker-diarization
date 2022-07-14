@@ -26,15 +26,18 @@ import eii.msgbus as mb
 
 import logging
 import datetime
-
-level = logging.DEBUG
+LOGGING_LEVEL = (
+    os.environ.get("LOGGING_LEVEL")
+    if os.environ.get("LOGGING_LEVEL") != None
+    else 20
+)
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)s] - %(message)s",
-    level=level,
+    level=LOGGING_LEVEL,
 )
-logging.root.setLevel(level)
+logging.root.setLevel(LOGGING_LEVEL)
 log = logging.getLogger()
-log.setLevel(level)
+log.setLevel(LOGGING_LEVEL)
 
 overwrite_speaker_diarization = False # if output -> model -> wav already exist continue overwrite_speaker_diarization
 overwrite_summarization = False # if output -> model -> wav already exist continue summarization
