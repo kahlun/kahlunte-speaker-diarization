@@ -248,8 +248,8 @@ def run():
 if __name__ == "__main__":
     # logging.basicConfig()
 
-    pyaudio_instance = pyaudio.PyAudio()
-    default_device = pyaudio_instance.get_default_input_device_info()
+    # pyaudio_instance = pyaudio.PyAudio()
+    # default_device = pyaudio_instance.get_default_input_device_info()
 
     audio_ingestion_host = (
         os.environ.get("audio_ingestion_host")
@@ -282,11 +282,11 @@ if __name__ == "__main__":
         else COMPRESSION_TYPE
     )
 
-    audio_device_name = (
-        str(os.environ.get("audio_device_name"))
-        if os.environ.get("audio_device_name") != None
-        else default_device["name"]
-    )
+    # audio_device_name = (
+    #     str(os.environ.get("audio_device_name"))
+    #     if os.environ.get("audio_device_name") != None
+    #     else default_device["name"]
+    # )
 
     wake_word = (
         str(os.environ.get("wake_word"))

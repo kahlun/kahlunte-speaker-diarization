@@ -17,6 +17,7 @@
 - [Performance / Benchmark support by using own data](#benchmark)
   - [ASR Dialogue](#asr-dialogue)
   - [Summarization (to be implement)](#summarization)
+- [Powerpoint Report](#powerpoint-report)
 - [References](#references)
 
 ## Overview
@@ -225,6 +226,18 @@ Benmark of ASR flow
 ### Summarization
 ROGUE, not yet implement for evaluate
 
+### Powerpoint Report
+
+It is stored in AVS COE, lead/founded by [Tan Say Chuan](say.chuan.tan@intel.com). This project also is funded from organisation, IOTG business unit Premium Content since April 2022 - September 30 2022. You can contact me, [Teoh Kah Lun](kah.lun.teoh@intel.com) if interest with the report, because my previous stakeholde (Say Chuan) might interest and discuss with your new exectuion.
+
+- [Report to do presentation on 28 September 2022](https://intel.sharepoint.com/:p:/r/sites/IOTGPMCEICECOE/Shared%20Documents/Audio_Speech_Voice%20(AVS)%20COE/Projects/Speaker%20Diarization%20and%20Summarization/in-AVS-speaker-diarization-23-9-2022.pptx?d=wb3c198ea19f3493d8f033295e05c6907&csf=1&web=1&e=L2QGmc)
+
+- Since september 2022
+[Report cover all data version 2](https://intel.sharepoint.com/:p:/r/sites/IOTGPMCEICECOE/_layouts/15/Doc.aspx?sourcedoc=%7B01928209-2C9A-4197-A5A9-C24C2B1C63A0%7D&file=Speaker%20diarization%20and%20summary%20report.pptx&action=edit&mobileredirect=true&DefaultItemOpen=1&cid=6547d136-7d85-4b29-9ebd-1b24f9dc1db2)
+
+- since June 8 
+[Report cover all data](https://intel.sharepoint.com/:p:/r/sites/IOTGPMCEICECOE/Shared%20Documents/Audio_Speech_Voice%20(AVS)%20COE/Projects/Speaker%20Diarization%20and%20Summarization/Speaker%20diarization%20and%20summary.pptx?d=wfe5438f5a4dc4f9a87d8835ef9530473&csf=1&web=1&e=Hp57De)
+
 ### References
 
 [[1] NVIDIA, toolkit NEMO, Speaker diarization](https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/asr/speaker_diarization/intro.html) 
@@ -232,6 +245,7 @@ ROGUE, not yet implement for evaluate
 [[2] Abstractive summarization, BART-large-cnn-samsum, huggingface](https://huggingface.co/philschmid/bart-large-cnn-samsum) 
 
 [[3] Benchmark tool for ASR, WER, JIWER](https://github.com/jitsi/jiwer)
+
 [[4] main research direction regarding summarization](https://www.cs.vassar.edu/~cs395/docs/23.pdf)
 
 [[5] nemo titanet-large, feature extraction](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/titanet_large)

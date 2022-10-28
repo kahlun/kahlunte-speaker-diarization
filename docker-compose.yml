@@ -1,0 +1,87 @@
+# Copyright (C) 2021 Intel Corporation
+# SPDX-License-Identifier: BSD-3-Clause
+version: "3"
+services:
+  audio-ingestion:
+    build: ./audio-ingestion
+    network_mode: "host"
+    environment:
+      # ZMQ-related configurations
+      - ZMQ_TOPIC=audio_for_speaker_diarization
+      - ZMQ_TYPE=zmq_tcp
+      - ZMQ_HOST_IP=127.0.0.1
+      - ZMQ_HOST_PORT=3001 # conflict with tts-ingestion
+      # Seconds for each publish of text
+      - PUBLISH_INTERVAL=10
+      # - AUDIO_FILE_PATH=original-vistry-ffmpeg-1-minute.wav
+      # - AUDIO_FILE_PATH=youtube-full-ffmpeg-start_from_1_minute-duration-1-minute.wav
+      - AUDIO_FILE_PATH=converted-icetec-drive-through.wav
+      # - AUDIO_FILE_PATH=original-vistry-ffmpeg.wav
+      - PYTHONUNBUFFERED= 1
+    # ports:
+    #   - 50054:50054
+    privileged: true
+  server_speaker_diarization:
+    build: ./speaker_diarization
+    environment:
+      # for server-service-speaker_diarization
+      - ZMQ_TOPIC_SD=audio_for_speaker_diarization
+      - ZMQ_TYPE_SD=zmq_tcp
+      - ZMQ_HOST_IP_SD=127.0.0.1
+      - ZMQ_HOST_PORT_SD=3001
+      - PYTHONUNBUFFERED= 1
+      - ZMQ_TOPIC_TS=text_summarization
+      - ZMQ_TYPE_TS=zmq_tcp
+      - ZMQ_HOST_IP_TS=127.0.0.1
+      - ZMQ_HOST_PORT_TS=3002
+      - KALDI_ROOT=/home/speaker-diarization/tmp/kaldi
+    network_mode: "host"
+    # user: 1000:1000
+    volumes:
+      - /run/user/1000/pulse/native:/run/user/1000/pulse/native
+  server_text_summarization:
+    build: ./text-summarization
+    environment:
+      # for server-service-speaker_diarization
+      - PYTHONUNBUFFERED= 1
+      - ZMQ_TOPIC_TS=text_summarization
+      - ZMQ_TYPE_TS=zmq_tcp
+      - ZMQ_HOST_IP_TS=127.0.0.1
+      - ZMQ_HOST_PORT_TS=3002
+      - TTS_OUTPUT=1 # whether to do text to speech
+    network_mode: "host"
+    # user: 1000:1000
+    # volumes:
+      # - /run/user/1000/pulse/native:/run/user/1000/pulse/native
+  va_bot:
+    # image: voice-announcement-bot-eii:1.0
+    context: ./tts/client-vab-bot/python/voice-announcement-bot-eii/
+    build: voice_announcement_bot_eii.dockerfile
+    environment:
+      - block_input=True
+      - speaker_id=19
+      - device=CPU
+      - alpha=1.0
+      # - tts_server_endpoint=localhost:50052
+      - tts_server_endpoint=0.0.0.0:50052
+      - samplerate=22050
+      - ZMQ_TYPE=zmq_tcp
+      - ZMQ_HOST_IP=127.0.0.1
+      - ZMQ_HOST_PORT=3000
+      - ZMQ_TOPIC=tts_zmq_topic
+      - PULSE_SERVER=unix:/run/user/1000/pulse/native
+      - cache=1
+    network_mode: "host"
+    user: 1000:1000
+    volumes:
+      - /run/user/1000/pulse/native:/run/user/1000/pulse/native
+  tts:
+    build: ./tts/services/tts.dockerfile
+    # image: tts:1.0
+    environment:
+      # - http_proxy
+      # - https_proxy
+      - cache=True
+    # ports:
+    #   - "50052:50052"
+    network_mode: "host"

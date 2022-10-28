@@ -65,7 +65,7 @@ from  scipy.io import wavfile
 import logging
 
 # logging.disable(logging.CRITICAL)
-# logging.getLogger('nemo_logger').setLevel(logging.ERROR)
+logging.getLogger('nemo_logger').setLevel(logging.ERROR)
 
 # level = logging.DEBUG
 LOGGING_LEVEL = (
@@ -80,7 +80,14 @@ logging.basicConfig(
 logging.root.setLevel(LOGGING_LEVEL)
 log = logging.getLogger()
 log.setLevel(LOGGING_LEVEL)
-logging.getLogger('nemo_logger').propagate = False
+
+for _ in logging.root.manager.loggerDict:
+    logging.getLogger(_).setLevel(logging.CRITICAL)
+
+# logging.getLogger('instantiator').setLevel(logging.ERROR)
+# logging.getLogger('alphabet').setLevel(logging.ERROR)
+# logging.getLogger('decoder').setLevel(logging.ERROR)
+# logging.getLogger('nemo_logger').propagate = False
 
 
 
@@ -204,7 +211,7 @@ def main(file_name):
     logging.info("Speaker diarization Done. ")
     logging.info("Result . . . .")
     if(text_lm_list[0]):
-        logging.info(text_lm_list[0])
+        logging.info("\n" + text_lm_list[0])
     else:
         logging.info('no audio file processed')
     # logging.info("time consumed (whole loop)", t_end - t_start)
@@ -312,7 +319,7 @@ def speaker_diarization(file_name, data_dir, asr_model_name, feature_model_name)
     
     logging.info('running speaker diarization with word timestamp hypothesis')
     diar_hyp, diar_score = asr_diar_offline.run_diarization(cfg, word_ts_hyp) 
-    logging.info('completed speaker diarization')
+    logging.info('completed speaker diarization (who spoke when)')
     
     logging.info('running aligning speaker diarization, word hypothesis, word time stamp hypothesis')
     asr_diar_offline.get_transcript_with_speaker_labels(diar_hyp, word_hyp, word_ts_hyp)
@@ -363,19 +370,19 @@ def publish_to_text_summarization(text):
         },
     }
     
-    log.info("Initializing message bus context for text summarization")
+    log.debug("Initializing message bus context for text summarization")
     msgbus = mb.MsgbusContext(mb_config)
 
-    log.info(f"Initializing publisher for topic '{zmq_topic}'")
+    log.debug(f"Initializing publisher for topic '{zmq_topic}'")
     publisher = msgbus.new_publisher(zmq_topic)
 
     # while True:
     meta = {
         'text' : text,
     }
-    log.info("Publishing...")
+    log.info("Publishing summarized text")
     publisher.publish(meta)
-    log.info("Published...")
+    log.info("Published text ...")
     publisher.close()
 
 try:
@@ -408,11 +415,11 @@ try:
         'ZMQ_MAXMSGSIZE' : -1,
     }
     
-    log.info("Collector Thread")
-    log.info("Initializing message bus context")
+    log.debug("Collector Thread")
+    log.debug("Initializing message bus context")
     msgbus = mb.MsgbusContext(mb_config)
 
-    log.info(f"Initializing subscriber for topic '{zmq_topic}'")
+    log.debug(f"Initializing subscriber for topic '{zmq_topic}'")
     subscriber = msgbus.new_subscriber(zmq_topic)
     a = 0
     
@@ -421,10 +428,9 @@ try:
     while True:
     # while (a<1):
         # while True:
-        log.info(f"subscribing for topic '{zmq_topic}'")
-        log.info(f"subscribing for topic hello, modified'")
+        log.debug(f"subscribing for topic '{zmq_topic}'")
         msg = subscriber.recv()
-        log.info("received")
+        log.info("received audio data")
         
         response_blob = msg.get_blob()
         received_meta_data = msg.get_meta_data()
@@ -441,7 +447,7 @@ try:
         dict_file_chunked[id]['data'] += response_blob
         
         if(received_meta_data['last']):
-            log.info('detected final pieces, combining')
+            log.debug('detected final pieces, combining')
             response_blob = dict_file_chunked[id]['data']
             r = base64.decodebytes(response_blob)
             dict_file_chunked.pop(id, None)
@@ -462,9 +468,9 @@ try:
                 os.remove(temp_wav_file)
             except OSError:
                 pass
-            log.info("done one speaker diarization")
+            log.debug("done one speaker diarization")
         else:
-            log.info('this round no complete file, not doing speaker diarizarion')
+            log.debug('this round no complete file, not doing speaker diarizarion')
         
         a+=1
         

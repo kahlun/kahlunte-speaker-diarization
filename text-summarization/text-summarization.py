@@ -242,12 +242,13 @@ try:
         # post process summary for demo purpose.
         # expect with fullstop, capital letter.
         summarizer_response['summary'] = 'The customer wants to order a sausage biscuit and a small cup of coffee.'
-        log.info(summarizer_response['summary']) 
+        log.info('\n' + summarizer_response['summary']) 
+        log.info("end of summarized text")
         
         log.info("execution time (H:M:S)")
         log.info(summarizer_response['execution_time'])
         
-        log.info('finish one summarization')
+        log.debug('finish one summarization')
 
         if os.environ.get("TTS_OUTPUT") != None:
             # log.debug("enter tts logic")
@@ -284,7 +285,7 @@ try:
             # "Three customers are waiting to be served at counter four."
             # topic = os.environ.get("ZMQ_TOPIC_TTS") or "tts_zmq_topic"
             try:
-                log.debug("Initializing EII Message Bus Configuration for TTS")
+                log.info("Initializing EII Message Bus Configuration for TTS")
                 mb_config = EII_MB().get_config()
                 log.debug(f'ZMQ Type = \'{mb_config["type"]}\'')
                 log.debug(f'ZMQ Host IP = {mb_config["zmq_tcp_publish"]["host"]}')
@@ -300,10 +301,10 @@ try:
                 log.debug("Running...")
                 # while True:
                 meta = {"0x2": sentence}
-                log.debug("Publishing...")
+                log.info("Publishing text for speech")
                 publisher.publish(meta)
 
-                log.debug(f"Published. Waiting for {1}s for next publish...")
+                log.info(f"Published text for speech")
                 time.sleep(1)
                 publisher.close()
 
